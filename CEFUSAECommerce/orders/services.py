@@ -1,12 +1,7 @@
-try:
-    from orders.models import Order, OrderItem
-    from orders.domain.builders import OrderBuilder
-    from orders.infra.factories import NotificationFactory, PaymentProcessorFactory
-except ImportError:
-    # Stubs temporales para que puedas trabajar sin esperar a tus compañeros
-    OrderBuilder = None
-    NotificationFactory = None
-    PaymentProcessorFactory = None
+from orders.models import Order, OrderItem
+from orders.domain.builders import OrderBuilder
+from orders.infra.factories import NotificationFactory, PaymentProcessorFactory
+
 
 # Clase para gestionar las ordenes
 class OrderService:
@@ -30,8 +25,8 @@ class OrderService:
         Creates a new order
         
         Args:
-            customer_data (dict): {'name': str, 'email': str, 'phone': str}
-            items (list): [{'product_name': str, 'quantity': int, 'unit_price': float}, ...]
+            customer_data (dict): {'name': str, 'email': str,...}
+            items (list): [{'product_name': str, 'quantity': int, 'price': float}, ...]
             shipping_address (str): Delivery address
             discount_code (str, optional): Discount code like 'SAVE10'
         
@@ -41,7 +36,7 @@ class OrderService:
         
         try:
             
-             # Validar customer
+            # Validar customer
             if not customer_data or not customer_data.get('name') or not customer_data.get('email'):
                 raise ValueError("Customer name and email are required")
             
@@ -68,48 +63,32 @@ class OrderService:
                 builder.add_item(
                     product_name=item['product_name'],
                     quantity=item['quantity'],
-                    unit_price=item['unit_price']
-                )
+                    price=item['price']
+                    )
                 
             builder.with_shipping_address(shipping_address)
             
             if discount_code:
                 builder.with_discount(discount_code)
                 
-            order_data = builder.build()
-            
-            # Guardar en la base de datos
-            order = Order.objects.create(
-                customer_name=order_data['customer_name'],
-                customer_email=order_data['customer_email'],
-                customer_phone=order_data['customer_phone'],
-                shipping_address=order_data['shipping_address'],
-                subtotal = order_data['subtotal'],
-                tax = order_data['tax'],
-                discount_code=order_data.get('discount_code'),
-                total_amount=order_data['total_amount']
-            )
-            
-            for item in order_data['items']:
-                OrderItem.objects.create(
-                    order=order,
-                    product_name=item['product_name'],
-                    quantity=item['quantity'],
-                    unit_price=item['unit_price'],
-                    subtotal=item['subtotal']
-                )
-            
-            order_id = order.id
+            order = builder.build()
+
             
             if self.notifier:
-                self.notifier.send_confirmation(
-                    email=customer_data['email'],
-                    order_id=order_id
-                )
+                try:
+                    message = f"Your order #{order.id} has been created successfully. Total: ${order.total_amount}"
+                    self.notifier.notify(
+                        user_email=customer_data['email'],
+                        message=message
+                    )
+                except Exception as e:
+                    # Si falla el email, no se cancela la orden
+                    print(f"Warning: Failed to send notification: {str(e)}")
         
             return {
                 'success': True,
-                'order_id': order_id,
+                'order_id': order.id,
+                'total_amount': float(order.total_amount),
                 'message': 'Order created successfully'
             }
         

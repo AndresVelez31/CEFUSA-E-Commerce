@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from orders.services import OrderService
 
 #Vista para crear la orden -> la delega al OrderService
+@method_decorator(csrf_exempt, name='dispatch')
 class CreateOrderView(View):
     def post(self, request):
         try:
