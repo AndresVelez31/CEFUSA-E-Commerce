@@ -1,5 +1,5 @@
 from django.test import TestCase
-from products.models import Product
+from products.models import Inventory, Product
 
 class StockTest(TestCase):
 
@@ -13,4 +13,5 @@ class StockTest(TestCase):
 
         quantity_requested = 10
 
-        self.assertTrue(quantity_requested > product.stock)
+        inventory = Inventory.objects.get(product=product)
+        self.assertTrue(quantity_requested > inventory.available_quantity)
