@@ -44,8 +44,7 @@ INSTALLED_APPS = [
     # Apps del proyecto
     'orders',
     'products',
-    # 'customers',  # Descomentar cuando Persona 2 cree la app
-]
+    'customers',
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
