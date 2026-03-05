@@ -37,7 +37,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'orders'
+    # DRF
+    'rest_framework',
+    # Apps del proyecto
+    'orders',
+    # 'products',   # Descomentar cuando Persona 1 cree la app
+    # 'customers',  # Descomentar cuando Persona 2 cree la app
 ]
 
 MIDDLEWARE = [
@@ -125,3 +130,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Environment configuration for Factory Pattern
 # Change to 'production' in production environment
 ENV_TYPE = 'development'
+
+# Django REST Framework
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
+}
+
+# CORS - permite peticiones desde el frontend React en desarrollo
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+]
