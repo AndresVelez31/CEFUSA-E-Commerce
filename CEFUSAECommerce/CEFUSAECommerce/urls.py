@@ -5,6 +5,6 @@ from django.urls import include, path
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/orders/', include('orders.urls')),
-    # path('api/products/', include('products.urls')),   # Persona 1
-    # path('api/customers/', include('customers.urls')), # Persona 2
+    path('api/products/', include('products.urls')), 
+    path('api/customers/', include('customers.urls')),
 ]

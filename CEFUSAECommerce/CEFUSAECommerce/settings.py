@@ -37,10 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # DRF
     'rest_framework',
+
     # Apps del proyecto
     'orders',
+    'products',
+    'customers',
     # 'products',   # Descomentar cuando Persona 1 cree la app
     # 'customers',  # Descomentar cuando Persona 2 cree la app
 ]

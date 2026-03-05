@@ -10,10 +10,12 @@ class OrderBuilder:
         self._shipping_address = None
         self._discount_code = None
 
+    #guarda la info del cliente
     def for_customer(self, customer_data: dict):
         self._customer_data = customer_data
         return self
 
+    # agrega productos a la orden y guarda el item, verificando cantidades y precios
     def add_item(self, product_name: str, quantity: int, price: float):
         if quantity <= 0:
             raise ValueError("Quantity must be greater than 0")
@@ -29,6 +31,7 @@ class OrderBuilder:
 
         return self
 
+    #guarda 
     def with_shipping_address(self, address: str):
         self._shipping_address = address
         return self
