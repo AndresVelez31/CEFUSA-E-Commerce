@@ -7,5 +7,5 @@ urlpatterns = [
     path('api/orders/',     include('orders.urls')),
     path('api/customers/',  include('customers.urls')),
     path('api/admin/',      include('CEFUSAECommerce.admin_urls')),
-    # path('api/products/', include('products.urls')),  # Persona 1 — pendiente
+    path('api/products/',   include('products.urls')),
 ]

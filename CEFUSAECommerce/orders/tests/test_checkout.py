@@ -23,7 +23,7 @@ class CheckoutTest(TestCase):
             quantity=2
         )
 
-        # calcular subtotal
-        subtotal = item.quantity * product.price
 
+        # calcular subtotal
+        subtotal = item.subtotal
         self.assertEqual(subtotal, 2000)
