@@ -41,8 +41,8 @@ INSTALLED_APPS = [
     'rest_framework',
     # Apps del proyecto
     'orders',
-    # 'products',   # Descomentar cuando Persona 1 cree la app
-    # 'customers',  # Descomentar cuando Persona 2 cree la app
+    'customers',
+    # 'products',  # Descomentar cuando Persona 1 cree la app
 ]
 
 MIDDLEWARE = [

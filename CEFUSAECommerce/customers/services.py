@@ -1,0 +1,111 @@
+from customers.models import Customer
+
+
+class CustomerService:
+    """
+    Servicio para gestión de clientes.
+    Cumple SRP: solo maneja lógica de negocio relativa a clientes.
+    """
+
+    def get_or_create_customer(self, email: str, data: dict) -> Customer:
+        """
+        Obtiene un cliente existente por email o crea uno nuevo.
+
+        Args:
+            email: Email del cliente
+            data: {'nombre', 'apellido', 'telefono', 'direccion'}
+
+        Returns:
+            Customer object
+        """
+        customer, created = Customer.objects.get_or_create(
+            email=email,
+            defaults={
+                'nombre':    data.get('nombre', ''),
+                'apellido':  data.get('apellido', ''),
+                'telefono':  data.get('telefono', ''),
+                'direccion': data.get('direccion', ''),
+            }
+        )
+
+        # Si ya existía, actualizar datos que pudieron cambiar
+        if not created:
+            updated = False
+            for field in ('nombre', 'apellido', 'telefono', 'direccion'):
+                if data.get(field) and getattr(customer, field) != data[field]:
+                    setattr(customer, field, data[field])
+                    updated = True
+            if updated:
+                customer.save()
+
+        return customer
+
+    def get_customer_by_email(self, email: str):
+        """
+        Busca un cliente por email.
+
+        Returns:
+            Customer object o None
+        """
+        try:
+            return Customer.objects.get(email=email)
+        except Customer.DoesNotExist:
+            return None
+
+    def get_customer_by_id(self, customer_id: int):
+        """
+        Busca un cliente por ID.
+
+        Returns:
+            Customer object o None
+        """
+        try:
+            return Customer.objects.get(pk=customer_id)
+        except Customer.DoesNotExist:
+            return None
+
+    def create_customer(self, data: dict) -> dict:
+        """
+        Crea un nuevo cliente.
+
+        Returns:
+            {'success': bool, 'customer': Customer, 'message': str}
+        """
+        if Customer.objects.filter(email=data.get('email')).exists():
+            return {
+                'success': False,
+                'customer': None,
+                'message': f"Ya existe un cliente con el email {data.get('email')}"
+            }
+
+        customer = Customer.objects.create(
+            nombre=data.get('nombre', ''),
+            apellido=data.get('apellido', ''),
+            email=data.get('email'),
+            telefono=data.get('telefono', ''),
+            direccion=data.get('direccion', ''),
+        )
+
+        return {
+            'success': True,
+            'customer': customer,
+            'message': 'Cliente creado exitosamente'
+        }
+
+    def get_customer_orders(self, customer_id: int) -> dict:
+        """
+        Retorna el historial de órdenes de un cliente.
+
+        Returns:
+            {'success': bool, 'orders': QuerySet, 'message': str}
+        """
+        customer = self.get_customer_by_id(customer_id)
+        if not customer:
+            return {'success': False, 'orders': [], 'message': 'Cliente no encontrado'}
+
+        return {
+            'success': True,
+            'customer': customer,
+            'orders': customer.orders.all().order_by('-fecha_creacion'),
+            'message': 'OK'
+        }
