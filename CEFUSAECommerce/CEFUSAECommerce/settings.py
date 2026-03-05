@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     # Apps del proyecto
     'orders',
-    # 'products',   # Descomentar cuando Persona 1 cree la app
+    'products',
     # 'customers',  # Descomentar cuando Persona 2 cree la app
 ]
 
@@ -128,7 +128,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Environment configuration for Factory Pattern
-# Change to 'production' in production environment
 ENV_TYPE = 'development'
 
 # Django REST Framework
