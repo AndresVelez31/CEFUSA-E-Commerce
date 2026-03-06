@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from orders.services import OrderService
-from orders.serializers import CheckoutSerializer, OrderSerializer
+from orders.api.serializers import CheckoutSerializer, OrderSerializer
 
 
 class CreateOrderView(APIView):

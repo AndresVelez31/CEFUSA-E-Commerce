@@ -1,13 +1,13 @@
 from django.urls import path
 
-from orders.views import (
+from orders.api.views import (
     AdminDashboardView,
     AdminOrderListView,
     AdminOrderDetailView,
     OrderDetailView,
     OrderStatusUpdateView,
 )
-from customers.views import AdminCustomerListView, AdminCustomerDetailView
+from customers.api.views import AdminCustomerListView, AdminCustomerDetailView
 
 urlpatterns = [
     path('dashboard/',                AdminDashboardView.as_view(),     name='admin-dashboard'),
