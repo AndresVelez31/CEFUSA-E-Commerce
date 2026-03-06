@@ -1,0 +1,937 @@
+\documentclass[12pt, a4paper]{article}
+
+% ─── Paquetes ─────────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{tcolorbox}
+\usepackage{parskip}
+\usepackage{microtype}
+
+% ─── Geometría ────────────────────────────────────────────────────────────────
+\geometry{
+    top=2.5cm, bottom=2.5cm,
+    left=3cm,  right=2.5cm
+}
+
+% ─── Colores ──────────────────────────────────────────────────────────────────
+\definecolor{azulCEFUSA}{RGB}{30, 64, 175}
+\definecolor{verdeOK}{RGB}{22, 163, 74}
+\definecolor{grisClaro}{RGB}{248, 250, 252}
+\definecolor{grisBorde}{RGB}{203, 213, 225}
+\definecolor{rojo}{RGB}{185, 28, 28}
+\definecolor{morado}{RGB}{109, 40, 217}
+
+% ─── Estilo de código Python ──────────────────────────────────────────────────
+\lstdefinestyle{python}{
+    language=Python,
+    backgroundcolor=\color{grisClaro},
+    basicstyle=\footnotesize\ttfamily,
+    keywordstyle=\color{azulCEFUSA}\bfseries,
+    commentstyle=\color{verdeOK}\itshape,
+    stringstyle=\color{rojo},
+    numberstyle=\tiny\color{gray},
+    emph={self, True, False, None},
+    emphstyle=\color{morado},
+    numbers=left,
+    numbersep=8pt,
+    stepnumber=1,
+    showstringspaces=false,
+    breaklines=true,
+    breakatwhitespace=true,
+    frame=single,
+    rulecolor=\color{grisBorde},
+    tabsize=4,
+    captionpos=b,
+    xleftmargin=1.5em,
+    framexleftmargin=1.5em,
+}
+
+\lstset{style=python}
+
+% ─── Cajas de información ─────────────────────────────────────────────────────
+\tcbuselibrary{skins, breakable}
+
+\newtcolorbox{conceptbox}[1]{
+    title=#1,
+    colback=azulCEFUSA!5,
+    colframe=azulCEFUSA,
+    fonttitle=\bfseries,
+    breakable,
+    arc=4pt,
+}
+
+\newtcolorbox{warningbox}[1]{
+    title=#1,
+    colback=yellow!10,
+    colframe=orange!80!black,
+    fonttitle=\bfseries,
+    breakable,
+    arc=4pt,
+}
+
+\newtcolorbox{tipbox}[1]{
+    title=#1,
+    colback=verdeOK!8,
+    colframe=verdeOK,
+    fonttitle=\bfseries,
+    breakable,
+    arc=4pt,
+}
+
+% ─── Encabezado y pie ─────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\textcolor{azulCEFUSA}{\textbf{CEFUSA E-Commerce}}}
+\fancyhead[R]{\small\textcolor{gray}{Arquitecturas de Software}}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ─── Formato de títulos ───────────────────────────────────────────────────────
+\titleformat{\section}
+  {\large\bfseries\color{azulCEFUSA}}
+  {\thesection.}{0.6em}{}[\titlerule]
+
+\titleformat{\subsection}
+  {\normalsize\bfseries\color{azulCEFUSA!80!black}}
+  {\thesubsection.}{0.5em}{}
+
+\titleformat{\subsubsection}
+  {\normalsize\bfseries}
+  {\thesubsubsection.}{0.5em}{}
+
+% ─── Hipervínculos ────────────────────────────────────────────────────────────
+\hypersetup{
+    colorlinks=true,
+    linkcolor=azulCEFUSA,
+    urlcolor=azulCEFUSA,
+    citecolor=azulCEFUSA,
+    pdftitle={Implementación de Patrones de Diseño — CEFUSA},
+    pdfauthor={Arquitecturas de Software},
+}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ─── Portada ──────────────────────────────────────────────────────────────────
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+
+    {\Huge\bfseries\color{azulCEFUSA} CEFUSA E-Commerce}\\[0.6em]
+    {\Large\color{gray} Plataforma de Comercio Electrónico}
+
+    \vspace{1.5cm}
+    \rule{0.7\linewidth}{1.5pt}\\[0.4em]
+    {\LARGE\bfseries Implementación de Patrones de Diseño}\\
+    {\large Apps \texttt{customers} y \texttt{orders}}\\
+    \rule{0.7\linewidth}{1.5pt}
+
+    \vspace{2cm}
+
+    \begin{tcolorbox}[
+        colback=azulCEFUSA!8, colframe=azulCEFUSA,
+        width=0.75\linewidth, arc=6pt,
+        title=\textbf{Patrones implementados},
+        fonttitle=\bfseries\large
+    ]
+        \begin{itemize}[leftmargin=1.5em]
+            \item \textbf{Builder} — construcción de órdenes paso a paso
+            \item \textbf{Factory} — creación de notificadores y procesadores de pago
+            \item \textbf{Service Layer / SRP} — separación de responsabilidades
+        \end{itemize}
+    \end{tcolorbox}
+
+    \vfill
+
+    \begin{tabular}{rl}
+        \textbf{Asignatura:} & Arquitecturas de Software \\[0.3em]
+        \textbf{Fecha:}      & Marzo 2026 \\[0.3em]
+        \textbf{Stack:}      & Django 5 · Python 3.12 · SQLite \\
+    \end{tabular}
+\end{titlepage}
+
+% ─── Tabla de contenidos ──────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Introducción y contexto}
+
+El proyecto CEFUSA E-Commerce sigue una arquitectura de capas bien definida para mantener el código mantenible, testeable y extensible. Las dos apps del backend que se describen en este documento son:
+
+\begin{itemize}
+    \item \textbf{\texttt{customers}} — gestión de clientes (registro, búsqueda, actualización).
+    \item \textbf{\texttt{orders}} — creación, seguimiento y actualización de estado de órdenes de compra.
+\end{itemize}
+
+Ambas apps comparten la misma filosofía arquitectónica:
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+    \toprule
+    \textbf{Capa} & \textbf{Responsabilidad} & \textbf{Archivos} \\
+    \midrule
+    Modelo        & Persistencia y esquema de datos & \texttt{models.py} \\
+    Dominio       & Reglas de negocio puras         & \texttt{domain/builders.py} \\
+    Infraestructura & Integraciones externas         & \texttt{infra/} \\
+    Servicio      & Orquestación de casos de uso    & \texttt{services.py} \\
+    Presentación  & API REST                        & \texttt{views.py}, \texttt{serializers.py} \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+\vspace{1em}
+
+\begin{conceptbox}{Principio rector: SRP (Single Responsibility Principle)}
+Cada clase y módulo tiene \textbf{una sola razón para cambiar}. Los modelos no contienen lógica de negocio compleja; los servicios no contienen lógica de presentación; los builders no hablan con la infraestructura directamente.
+\end{conceptbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\newpage
+\section{App \texttt{customers}}
+
+\subsection{Paso 1 — Definir el modelo \texttt{Customer}}
+
+El primer paso es crear el modelo de dominio que representa a un cliente dentro del sistema. El archivo es \texttt{customers/models.py}.
+
+\subsubsection{¿Qué campos incluir?}
+
+Se necesita persistir la información de contacto básica y una propiedad de conveniencia:
+
+\begin{lstlisting}[caption={customers/models.py}]
+from django.db import models
+
+
+class Customer(models.Model):
+    nombre    = models.CharField(max_length=100)
+    apellido  = models.CharField(max_length=100)
+    email     = models.EmailField(unique=True)   # clave de negocio unica
+    telefono  = models.CharField(max_length=20)
+    direccion = models.TextField(blank=True, default='')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = 'Cliente'
+        verbose_name_plural = 'Clientes'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.nombre} {self.apellido} <{self.email}>"
+
+    @property
+    def nombre_completo(self):
+        return f"{self.nombre} {self.apellido}"
+\end{lstlisting}
+
+\subsubsection{Decisiones de diseño}
+
+\begin{itemize}
+    \item \textbf{\texttt{email} único}: actúa como clave de negocio — permite buscar o crear un cliente con una sola consulta (\texttt{get\_or\_create}).
+    \item \textbf{\texttt{auto\_now\_add}}: el timestamp se asigna automáticamente al momento de la inserción; nunca se modifica.
+    \item \textbf{\texttt{nombre\_completo} como \texttt{@property}}: lógica de presentación mínima dentro del modelo, sin depender de ninguna capa externa.
+    \item \textbf{No hay contraseña}: los clientes del e-commerce no son usuarios del sistema de autenticación de Django; son entidades de dominio separadas.
+\end{itemize}
+
+\subsection{Paso 2 — Generar y aplicar la migración}
+
+Después de definir el modelo, se genera el archivo de migración con:
+
+\begin{lstlisting}[language=bash, style=python, caption={Comandos de consola}]
+python manage.py makemigrations customers
+# Crea: customers/migrations/0001_initial.py
+
+python manage.py migrate
+# Aplica la migracion a la base de datos
+\end{lstlisting}
+
+\begin{warningbox}{Importante}
+Cada vez que se modifique el modelo (añadir campos, cambiar restricciones), se debe ejecutar \texttt{makemigrations} antes de \texttt{migrate}. Nunca editar manualmente los archivos de migración ya aplicados.
+\end{warningbox}
+
+\subsection{Paso 3 — Implementar \texttt{CustomerService}}
+
+El servicio centraliza toda la lógica de negocio relacionada con clientes. Se crea en \texttt{customers/services.py}.
+
+\subsubsection{Método principal: \texttt{get\_or\_create\_customer}}
+
+Este método es el más importante: resuelve el cliente a partir de su email de forma idempotente (si ya existe, lo actualiza; si no, lo crea).
+
+\begin{lstlisting}[caption={customers/services.py — get\_or\_create\_customer}]
+from customers.models import Customer
+
+
+class CustomerService:
+
+    def get_or_create_customer(self, email: str, data: dict) -> Customer:
+        customer, created = Customer.objects.get_or_create(
+            email=email,
+            defaults={
+                'nombre':    data.get('nombre', ''),
+                'apellido':  data.get('apellido', ''),
+                'telefono':  data.get('telefono', ''),
+                'direccion': data.get('direccion', ''),
+            }
+        )
+
+        # Si ya existia, actualizar solo los campos que cambiaron
+        if not created:
+            updated = False
+            for field in ('nombre', 'apellido', 'telefono', 'direccion'):
+                if data.get(field) and getattr(customer, field) != data[field]:
+                    setattr(customer, field, data[field])
+                    updated = True
+            if updated:
+                customer.save()
+
+        return customer
+\end{lstlisting}
+
+\textbf{¿Por qué \texttt{get\_or\_create} en lugar de \texttt{filter().first()}?}
+
+El método \texttt{get\_or\_create} de Django es \textbf{atómico}: en una sola consulta SQL hace el \texttt{SELECT} y, si no encuentra el registro, ejecuta el \texttt{INSERT}. Esto evita condiciones de carrera (\textit{race conditions}) cuando dos solicitudes llegan al mismo tiempo con el mismo email.
+
+\subsubsection{Métodos de consulta}
+
+\begin{lstlisting}[caption={customers/services.py — métodos de consulta}]
+    def get_customer_by_email(self, email: str):
+        try:
+            return Customer.objects.get(email=email)
+        except Customer.DoesNotExist:
+            return None
+
+    def get_customer_by_id(self, customer_id: int):
+        try:
+            return Customer.objects.get(pk=customer_id)
+        except Customer.DoesNotExist:
+            return None
+\end{lstlisting}
+
+Ambos devuelven \texttt{None} en lugar de lanzar una excepción. Esto simplifica el código del llamador: basta con comprobar \texttt{if customer is None}.
+
+\subsubsection{Método de creación directa}
+
+\begin{lstlisting}[caption={customers/services.py — create\_customer}]
+    def create_customer(self, data: dict) -> dict:
+        if Customer.objects.filter(email=data.get('email')).exists():
+            return {
+                'success': False,
+                'customer': None,
+                'message': f"Ya existe un cliente con el email {data.get('email')}"
+            }
+
+        customer = Customer.objects.create(
+            nombre=data.get('nombre', ''),
+            apellido=data.get('apellido', ''),
+            email=data.get('email'),
+            telefono=data.get('telefono', ''),
+            direccion=data.get('direccion', ''),
+        )
+        return {
+            'success': True,
+            'customer': customer,
+            'message': 'Cliente creado exitosamente'
+        }
+
+    def get_customer_orders(self, customer_id: int) -> dict:
+        customer = self.get_customer_by_id(customer_id)
+        if not customer:
+            return {'success': False, 'orders': [],
+                    'message': 'Cliente no encontrado'}
+        return {
+            'success': True,
+            'customer': customer,
+            'orders': customer.orders.all().order_by('-fecha_creacion'),
+            'message': 'OK'
+        }
+\end{lstlisting}
+
+\begin{tipbox}{Convención de retorno}
+Todos los métodos que pueden fallar retornan un diccionario con la clave \texttt{success: bool}. Esto permite que las vistas manejen errores de forma uniforme sin depender de bloques \texttt{try/except} en cada endpoint.
+\end{tipbox}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\newpage
+\section{App \texttt{orders}}
+
+\subsection{Paso 4 — Definir los modelos \texttt{Order} y \texttt{OrderItem}}
+
+Una orden tiene una relación \textit{uno a muchos} con sus ítems. Ambos modelos se definen en \texttt{orders/models.py}.
+
+\begin{lstlisting}[caption={orders/models.py — modelo Order}]
+from django.db import models
+from django.core.validators import MinValueValidator
+
+
+class Order(models.Model):
+
+    STATUS_CHOICES = [
+        ('pending',   'Pendiente'),
+        ('confirmed', 'Confirmado'),
+        ('shipped',   'Enviado'),
+        ('delivered', 'Entregado'),
+        ('cancelled', 'Cancelado'),
+    ]
+
+    customer = models.ForeignKey(
+        'customers.Customer',
+        on_delete=models.PROTECT,   # no borrar cliente si tiene ordenes
+        related_name='orders'
+    )
+    fecha_creacion  = models.DateTimeField(auto_now_add=True)
+    status          = models.CharField(
+        max_length=20, choices=STATUS_CHOICES, default='pending'
+    )
+    direccion_envio = models.TextField()
+    discount_code   = models.CharField(max_length=50, null=True, blank=True)
+    subtotal        = models.DecimalField(
+        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+    )
+    discount_amount = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0,
+        validators=[MinValueValidator(0)]
+    )
+    total           = models.DecimalField(
+        max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
+    )
+    tracking_number = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        verbose_name = 'Orden'
+        verbose_name_plural = 'Ordenes'
+        ordering = ['-fecha_creacion']
+
+    @property
+    def is_pending(self):
+        return self.status == 'pending'
+
+    @property
+    def is_cancelled(self):
+        return self.status == 'cancelled'
+\end{lstlisting}
+
+\begin{lstlisting}[caption={orders/models.py — modelo OrderItem}]
+class OrderItem(models.Model):
+    order        = models.ForeignKey(
+        Order, related_name='items', on_delete=models.CASCADE
+    )
+    variant_id   = models.PositiveIntegerField(null=True, blank=True)
+    product_name = models.CharField(max_length=150)  # snapshot del nombre
+    quantity     = models.PositiveIntegerField()
+    price        = models.DecimalField(               # snapshot del precio
+        max_digits=10, decimal_places=2,
+        validators=[MinValueValidator(0)]
+    )
+\end{lstlisting}
+
+\subsubsection{Decisiones clave del modelo}
+
+\begin{itemize}
+    \item \textbf{\texttt{on\_delete=PROTECT} en Customer}: un cliente no puede borrarse si tiene órdenes, protegiendo la integridad histórica.
+    \item \textbf{\texttt{on\_delete=CASCADE} en OrderItem}: si se borra una orden, sus ítems desaparecen con ella.
+    \item \textbf{Snapshot de nombre y precio}: \texttt{product\_name} y \texttt{price} en \texttt{OrderItem} guardan el valor \textit{en el momento de la compra}. Si el producto cambia de precio después, las órdenes históricas no se ven afectadas.
+    \item \textbf{\texttt{MinValueValidator(0)}}: restricción a nivel de aplicación (y reflejada en el esquema) que impide valores negativos en campos monetarios.
+    \item \textbf{\texttt{DecimalField} en lugar de \texttt{FloatField}}: los decimales de punto flotante tienen errores de redondeo en operaciones acumuladas. \texttt{Decimal} garantiza precisión exacta para dinero.
+\end{itemize}
+
+\subsection{Paso 5 — Patrón Builder (\texttt{OrderBuilder})}
+
+\begin{conceptbox}{Patrón de diseño: Builder}
+Separa la \textbf{construcción} de un objeto complejo de su \textbf{representación final}. Permite construir el objeto paso a paso mediante una \textit{fluent interface} (cada método devuelve \texttt{self}), acumulando configuración hasta llamar a \texttt{build()}.
+
+\textbf{Problema que resuelve}: crear una orden requiere validar datos, calcular subtotal, aplicar descuentos y persistir múltiples registros relacionados. Hacerlo en el servicio directamente mezclaría responsabilidades y haría el código difícil de testear.
+\end{conceptbox}
+
+El builder vive en \texttt{orders/domain/builders.py} (carpeta \texttt{domain/} porque es lógica de negocio pura, sin dependencias de infraestructura).
+
+\subsubsection{Estructura del Builder}
+
+\begin{lstlisting}[caption={orders/domain/builders.py — estructura base}]
+from decimal import Decimal
+from orders.models import Order, OrderItem
+
+
+class OrderBuilder:
+
+    DISCOUNT_RATE = Decimal("0.10")   # 10% de descuento plano
+
+    def __init__(self):
+        self._customer = None
+        self._items = []
+        self._direccion_envio = None
+        self._discount_code = None
+\end{lstlisting}
+
+\subsubsection{Métodos de configuración (fluent interface)}
+
+Cada método realiza validaciones inmediatas y devuelve \texttt{self} para encadenar llamadas:
+
+\begin{lstlisting}[caption={orders/domain/builders.py — métodos fluent}]
+    def for_customer(self, customer):
+        self._customer = customer
+        return self
+
+    def with_shipping_address(self, address: str):
+        self._direccion_envio = address
+        return self
+
+    def with_discount(self, discount_code: str = None):
+        self._discount_code = discount_code
+        return self
+
+    def add_item(self, product_name: str, quantity: int,
+                 price: float, variant_id: int = None):
+        if quantity <= 0:
+            raise ValueError("La cantidad debe ser mayor a 0")
+        if price < 0:
+            raise ValueError("El precio no puede ser negativo")
+
+        self._items.append({
+            "product_name": product_name,
+            "quantity":     quantity,
+            "price":        Decimal(str(price)),  # conversion segura
+            "variant_id":   variant_id,
+        })
+        return self
+\end{lstlisting}
+
+\textbf{¿Por qué \texttt{Decimal(str(price))} y no \texttt{Decimal(price)}?}
+
+La conversión directa \texttt{Decimal(1.5)} hereda el error de punto flotante del \texttt{float} de Python. En cambio, \texttt{Decimal("1.5")} — o equivalentemente \texttt{Decimal(str(1.5))} — produce un decimal exacto.
+
+\subsubsection{Método \texttt{build()}}
+
+Este es el único método que toca la base de datos. Agrupa todas las operaciones en una sola transacción implícita:
+
+\begin{lstlisting}[caption={orders/domain/builders.py — método build()}]
+    def build(self) -> Order:
+        # 1. Validaciones finales
+        if not self._customer:
+            raise ValueError("Se requiere un Customer para crear la orden")
+        if not self._items:
+            raise ValueError("La orden debe tener al menos un item")
+        if not self._direccion_envio:
+            raise ValueError("Se requiere una direccion de envio")
+
+        # 2. Calculos monetarios
+        subtotal = sum(
+            item["quantity"] * item["price"]
+            for item in self._items
+        )
+
+        if self._discount_code:
+            discount_amount = subtotal * self.DISCOUNT_RATE
+        else:
+            discount_amount = Decimal("0.00")
+
+        total = subtotal - discount_amount
+
+        # 3. Persistir la orden cabecera
+        order = Order.objects.create(
+            customer=self._customer,
+            direccion_envio=self._direccion_envio,
+            discount_code=self._discount_code,
+            subtotal=subtotal,
+            discount_amount=discount_amount,
+            total=total,
+        )
+
+        # 4. Persistir cada item
+        for item in self._items:
+            OrderItem.objects.create(
+                order=order,
+                variant_id=item["variant_id"],
+                product_name=item["product_name"],
+                quantity=item["quantity"],
+                price=item["price"],
+            )
+
+        return order
+\end{lstlisting}
+
+\subsubsection{Ejemplo de uso del Builder}
+
+Así se ve el Builder en acción desde el servicio o desde la consola de Django:
+
+\begin{lstlisting}[caption={Uso del Builder — ejemplo}]
+from orders.domain.builders import OrderBuilder
+from customers.models import Customer
+
+cliente = Customer.objects.get(email="ana@ejemplo.com")
+
+orden = (
+    OrderBuilder()
+    .for_customer(cliente)
+    .with_shipping_address("Calle Falsa 123, Madrid")
+    .add_item("Laptop Dell", quantity=1, price=1200.00, variant_id=5)
+    .add_item("Mouse Logitech", quantity=2, price=45.50)
+    .with_discount("PROMO10")
+    .build()
+)
+
+print(orden.subtotal)        # 1291.00
+print(orden.discount_amount) # 129.10  (10%)
+print(orden.total)           # 1161.90
+\end{lstlisting}
+
+\begin{tipbox}{Ventajas del Builder en este contexto}
+\begin{itemize}
+    \item Se puede agregar cualquier cantidad de ítems sin cambiar la firma del método.
+    \item Los tests unitarios pueden testear el builder sin tocar \texttt{OrderService}.
+    \item Si se necesita un nuevo tipo de orden (express, suscripción), basta con extender el builder o crear uno nuevo.
+\end{itemize}
+\end{tipbox}
+
+\subsection{Paso 6 — Patrón Factory (infraestructura)}
+
+\begin{conceptbox}{Patrón de diseño: Factory Method}
+Define una interfaz para crear objetos, pero deja que las subclases (o condiciones de configuración) decidan qué clase concreta instanciar. El código cliente trabaja con la interfaz, no con implementaciones concretas.
+
+\textbf{Problema que resuelve}: en desarrollo se usan notificadores y procesadores de pago simulados (\textit{mock}); en producción se usan los reales. Sin Factory, se necesitarían \texttt{if/else} dispersos por todo el código.
+\end{conceptbox}
+
+\subsubsection{Notificadores (\texttt{orders/infra/notifiers.py})}
+
+\begin{lstlisting}[caption={orders/infra/notifiers.py}]
+class MockNotifier:
+    def notify(self, user_email: str, message: str) -> dict:
+        print(f"[MOCK NOTIFICATION] To: {user_email}")
+        print(f"[MOCK MESSAGE] {message}")
+        return {
+            'success': True,
+            'method': 'mock',
+            'recipient': user_email,
+            'message': 'Notification simulated (development mode)'
+        }
+
+
+class EmailNotifier:
+    def notify(self, user_email: str, message: str) -> dict:
+        # Aqui iria la integracion con SendGrid / AWS SES / etc.
+        print(f"[REAL EMAIL] Sending to: {user_email}")
+        return {
+            'success': True,
+            'method': 'email',
+            'recipient': user_email,
+            'message': 'Email sent successfully'
+        }
+\end{lstlisting}
+
+Ambas clases implementan la misma interfaz (método \texttt{notify}), por lo que son intercambiables sin afectar al llamador.
+
+\subsubsection{Procesadores de pago (\texttt{orders/infra/payment.py})}
+
+\begin{lstlisting}[caption={orders/infra/payment.py}]
+import random
+
+
+class MockPaymentProcessor:
+    def process_payment(self, amount: float) -> dict:
+        transaction_id = f"MOCK-{random.randint(100000, 999999)}"
+        print(f"[MOCK PAYMENT] Processing ${amount} — ID: {transaction_id}")
+        return {
+            'success': True,
+            'transaction_id': transaction_id,
+            'amount': amount,
+            'processor': 'mock',
+            'message': 'Payment simulated (development mode)'
+        }
+
+
+class RealPaymentProcessor:
+    def process_payment(self, amount: float) -> dict:
+        # Aqui iria la integracion con Stripe / PayPal / etc.
+        transaction_id = f"REAL-{random.randint(100000, 999999)}"
+        return {
+            'success': True,
+            'transaction_id': transaction_id,
+            'amount': amount,
+            'processor': 'real',
+            'message': 'Payment processed successfully'
+        }
+\end{lstlisting}
+
+\subsubsection{Factories (\texttt{orders/infra/factories.py})}
+
+Las factories leen la variable de configuración \texttt{settings.ENV\_TYPE} y deciden qué implementación concreta entregar:
+
+\begin{lstlisting}[caption={orders/infra/factories.py}]
+from django.conf import settings
+from .notifiers import MockNotifier, EmailNotifier
+from .payment import MockPaymentProcessor, RealPaymentProcessor
+
+
+class NotificationFactory:
+    @staticmethod
+    def create():
+        if settings.ENV_TYPE == 'development':
+            return MockNotifier()
+        return EmailNotifier()
+
+
+class PaymentProcessorFactory:
+    @staticmethod
+    def create():
+        if settings.ENV_TYPE == 'development':
+            return MockPaymentProcessor()
+        return RealPaymentProcessor()
+\end{lstlisting}
+
+Para activar el modo producción, basta con cambiar en \texttt{settings.py}:
+
+\begin{lstlisting}[caption={CEFUSAECommerce/settings.py}]
+# Desarrollo:
+ENV_TYPE = 'development'
+
+# Produccion:
+ENV_TYPE = 'production'
+\end{lstlisting}
+
+\textbf{Todo el resto del código no cambia.}
+
+\subsection{Paso 7 — \texttt{OrderService} (capa de orquestación)}
+
+El servicio actúa como \textbf{director de casos de uso}: coordina el \texttt{CustomerService}, el \texttt{OrderBuilder} y la infraestructura. No contiene lógica de negocio propia; delega en las capas correctas.
+
+\begin{lstlisting}[caption={orders/services.py — constructor e inyección de dependencias}]
+from orders.models import Order
+from orders.domain.builders import OrderBuilder
+from orders.infra.factories import NotificationFactory, PaymentProcessorFactory
+from customers.services import CustomerService
+
+
+class OrderService:
+
+    def __init__(self, notifier=None, payment_processor=None):
+        # Inyeccion de dependencias: si no se proveen, usa las factories
+        self.notifier = notifier or NotificationFactory.create()
+        self.payment_processor = (
+            payment_processor or PaymentProcessorFactory.create()
+        )
+        self.customer_service = CustomerService()
+\end{lstlisting}
+
+\begin{conceptbox}{Inyección de dependencias en el constructor}
+El parámetro \texttt{notifier=None} permite que los tests pasen un \textit{mock} sin activar la infraestructura real. Si en producción no se pasa nada, la factory devuelve el objeto correcto automáticamente. Este patrón se llama \textbf{Dependency Injection}.
+\end{conceptbox}
+
+\subsubsection{Método principal: \texttt{create\_order}}
+
+\begin{lstlisting}[caption={orders/services.py — create\_order}]
+    def create_order(self, customer_data: dict, items: list,
+                     shipping_address: str,
+                     discount_code: str = None) -> dict:
+        try:
+            # 1. Validaciones de entrada
+            if not customer_data:
+                raise ValueError("Los datos del cliente son obligatorios")
+            if not items:
+                raise ValueError("La orden debe tener al menos un item")
+            if not shipping_address:
+                raise ValueError("La direccion de envio es obligatoria")
+
+            # 2. Resolver el cliente (obtener o crear)
+            customer = self.customer_service.get_or_create_customer(
+                email=customer_data['email'],
+                data=customer_data,
+            )
+
+            # 3. Construir la orden con el Builder
+            builder = (
+                OrderBuilder()
+                .for_customer(customer)
+                .with_shipping_address(shipping_address)
+            )
+            for item in items:
+                builder.add_item(
+                    product_name=item['product_name'],
+                    quantity=item['quantity'],
+                    price=item['price'],
+                    variant_id=item.get('variant_id'),
+                )
+            if discount_code:
+                builder.with_discount(discount_code)
+
+            order = builder.build()
+
+            # 4. Notificar al cliente (no critico: fallo silencioso)
+            try:
+                self.notifier.notify(
+                    user_email=customer.email,
+                    message=(
+                        f"Tu orden #{order.pk} fue creada. "
+                        f"Total: ${order.total}"
+                    ),
+                )
+            except Exception as notify_err:
+                print(f"[Warning] Notificacion fallida: {notify_err}")
+
+            return {
+                'success':  True,
+                'order_id': order.pk,
+                'total':    float(order.total),
+                'message':  'Orden creada exitosamente',
+            }
+
+        except ValueError as e:
+            return {'success': False, 'order_id': None,
+                    'total': None, 'message': str(e)}
+        except Exception as e:
+            return {'success': False, 'order_id': None, 'total': None,
+                    'message': f'Error al crear la orden: {str(e)}'}
+\end{lstlisting}
+
+\subsubsection{Métodos de consulta y actualización}
+
+\begin{lstlisting}[caption={orders/services.py — consultas}]
+    def get_order(self, order_id: int) -> Order | None:
+        try:
+            return (Order.objects
+                    .select_related('customer')
+                    .prefetch_related('items')
+                    .get(pk=order_id))
+        except Order.DoesNotExist:
+            return None
+
+    def update_status(self, order_id: int, new_status: str) -> dict:
+        valid = [c[0] for c in Order.STATUS_CHOICES]
+        if new_status not in valid:
+            return {'success': False,
+                    'message': f'Estado invalido. Opciones: {valid}'}
+        try:
+            order = Order.objects.get(pk=order_id)
+            order.status = new_status
+            order.save(update_fields=['status'])
+            return {'success': True,
+                    'message': f'Estado actualizado a {new_status}'}
+        except Order.DoesNotExist:
+            return {'success': False, 'message': 'Orden no encontrada'}
+\end{lstlisting}
+
+\textbf{¿Por qué \texttt{select\_related} y \texttt{prefetch\_related}?}
+
+\begin{itemize}
+    \item \texttt{select\_related('customer')}: resuelve la FK de \texttt{Customer} en el mismo \texttt{JOIN} de la consulta principal (evita una segunda query).
+    \item \texttt{prefetch\_related('items')}: hace una segunda query para los ítems y los cachea en memoria, evitando el problema N+1 al iterar.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\newpage
+\section{Flujo completo de una orden}
+
+A continuación se muestra el flujo de ejecución cuando se crea una orden desde el frontend:
+
+\begin{center}
+\begin{tcolorbox}[
+    colback=grisClaro, colframe=grisBorde,
+    width=0.95\linewidth, arc=4pt,
+    title=\textbf{Flujo: POST /api/orders/}
+]
+\begin{enumerate}[leftmargin=2em, label=\textbf{\arabic*.}]
+    \item La vista (\texttt{OrderView}) recibe el JSON y llama a \texttt{OrderService.create\_order()}.
+    \item \texttt{OrderService} valida que los campos obligatorios estén presentes.
+    \item \texttt{OrderService} llama a \texttt{CustomerService.get\_or\_create\_customer()} para resolver el cliente.
+    \item \texttt{OrderService} instancia un \texttt{OrderBuilder} y lo configura con el cliente, la dirección y los ítems.
+    \item \texttt{OrderBuilder.build()} calcula subtotal, descuento y total; persiste \texttt{Order} + \texttt{OrderItem}s.
+    \item \texttt{OrderService} llama a \texttt{notifier.notify()} (si falla, solo imprime un warning).
+    \item \texttt{OrderService} devuelve \texttt{\{'success': True, 'order\_id': ..., 'total': ...\}}.
+    \item La vista serializa y retorna HTTP 201.
+\end{enumerate}
+\end{tcolorbox}
+\end{center}
+
+\subsection{Diagrama de responsabilidades}
+
+\begin{center}
+\begin{tabular}{@{}p{3.5cm}p{4cm}p{5.5cm}@{}}
+    \toprule
+    \textbf{Componente} & \textbf{Capa} & \textbf{Responsabilidad} \\
+    \midrule
+    \texttt{Customer} (model) & Datos & Esquema y persistencia del cliente \\
+    \texttt{Order / OrderItem} & Datos & Esquema y persistencia de la orden \\
+    \texttt{OrderBuilder} & Dominio & Construcción y cálculos de la orden \\
+    \texttt{MockNotifier / EmailNotifier} & Infra & Envío de notificaciones \\
+    \texttt{MockPayment / RealPayment} & Infra & Procesamiento de pagos \\
+    \texttt{NotificationFactory} & Infra & Selección del notificador correcto \\
+    \texttt{PaymentProcessorFactory} & Infra & Selección del procesador correcto \\
+    \texttt{CustomerService} & Aplicación & Lógica de negocio de clientes \\
+    \texttt{OrderService} & Aplicación & Orquestación del caso de uso \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\newpage
+\section{Estructura de archivos resultante}
+
+\begin{lstlisting}[language=bash, style=python, caption={Árbol de archivos de ambas apps}]
+CEFUSAECommerce/
+|-- customers/
+|   |-- migrations/
+|   |   |-- 0001_initial.py
+|   |-- models.py          # Customer
+|   |-- services.py        # CustomerService
+|   |-- serializers.py     # CustomerSerializer
+|   |-- views.py           # endpoints REST
+|   |-- urls.py
+|
+|-- orders/
+    |-- domain/
+    |   |-- builders.py    # OrderBuilder (PATRON BUILDER)
+    |-- infra/
+    |   |-- factories.py   # NotificationFactory, PaymentProcessorFactory
+    |   |-- notifiers.py   # MockNotifier, EmailNotifier
+    |   |-- payment.py     # MockPaymentProcessor, RealPaymentProcessor
+    |-- migrations/
+    |   |-- 0001_initial.py
+    |-- models.py          # Order, OrderItem
+    |-- services.py        # OrderService
+    |-- serializers.py
+    |-- views.py
+    |-- urls.py
+\end{lstlisting}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Resumen de patrones aplicados}
+
+\begin{center}
+\begin{tabular}{@{}p{3.5cm}p{4.5cm}p{5cm}@{}}
+    \toprule
+    \textbf{Patrón} & \textbf{Archivo} & \textbf{Beneficio principal} \\
+    \midrule
+    \textbf{Builder} &
+    \texttt{orders/domain/builders.py} &
+    Construcción fluida y testeable de órdenes complejas \\[0.5em]
+
+    \textbf{Factory Method} &
+    \texttt{orders/infra/factories.py} &
+    Intercambiar dev/prod sin modificar código de negocio \\[0.5em]
+
+    \textbf{Service Layer} &
+    \texttt{orders/services.py} \newline \texttt{customers/services.py} &
+    SRP: separa lógica de negocio de presentación y datos \\[0.5em]
+
+    \textbf{Dependency Injection} &
+    \texttt{OrderService.\_\_init\_\_} &
+    Permite inyectar mocks en tests sin cambiar el servicio \\[0.5em]
+
+    \textbf{Repository (implícito)} &
+    Métodos \texttt{get\_*} en services &
+    Encapsula el acceso a datos detrás de métodos semánticos \\
+    \bottomrule
+\end{tabular}
+\end{center}
+
+% ─── Fin del documento ────────────────────────────────────────────────────────
+\end{document}
