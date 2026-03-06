@@ -5,6 +5,12 @@ import toast from 'react-hot-toast'
 import { getProduct } from '../api/products'
 import { useCart } from '../context/CartContext'
 
+const CATEGORY_LABELS = {
+  clothes:    'Ropa',
+  accesories: 'Accesorios',
+  other:      'Otros',
+}
+
 export default function ProductDetailPage() {
   const { id } = useParams()
   const { addItem } = useCart()
@@ -60,7 +66,7 @@ export default function ProductDetailPage() {
 
   if (!product) {
     return (
-      <div className="text-center py-20 text-slate-500">
+      <div className="text-center py-20 text-gray-500">
         <p className="text-4xl mb-3">😕</p>
         <p>Producto no encontrado</p>
         <Link to="/" className="btn-primary mt-4 inline-block">Volver al inicio</Link>
@@ -73,25 +79,25 @@ export default function ProductDetailPage() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       {/* Back */}
-      <Link to="/" className="inline-flex items-center gap-2 text-slate-400 hover:text-brand-400 text-sm mb-8 transition-colors">
+      <Link to="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-brand-600 text-sm mb-8 transition-colors">
         <ArrowLeftIcon className="w-4 h-4" />
         Volver al catálogo
       </Link>
 
       <div className="grid md:grid-cols-2 gap-10">
         {/* Image */}
-        <div className="card h-80 md:h-full flex items-center justify-center bg-gradient-to-br from-dark-700 to-dark-800 text-8xl rounded-2xl">
+        <div className="card h-80 md:h-full flex items-center justify-center bg-gradient-to-br from-dark-700 to-dark-600 text-8xl rounded-2xl">
           🛍️
         </div>
 
         {/* Details */}
         <div className="space-y-6">
           <div>
-            <span className="badge bg-brand-900/60 text-brand-300 border border-brand-700 mb-2">
-              {product.category}
+            <span className="badge bg-brand-100 text-brand-700 border border-brand-200 mb-2">
+              {CATEGORY_LABELS[product.category] ?? product.category}
             </span>
-            <h1 className="text-3xl font-extrabold text-white mt-2">{product.name}</h1>
-            <p className="text-slate-400 mt-3 leading-relaxed">{product.description}</p>
+            <h1 className="text-3xl font-extrabold text-gray-900 mt-2">{product.name}</h1>
+            <p className="text-gray-600 mt-3 leading-relaxed">{product.description}</p>
           </div>
 
           {/* Variants selection */}
@@ -108,8 +114,8 @@ export default function ProductDetailPage() {
                       ${selectedVariant?.id === v.id
                         ? 'bg-brand-600 border-brand-500 text-white'
                         : v.is_available
-                          ? 'bg-dark-700 border-dark-600 text-slate-300 hover:border-brand-600'
-                          : 'bg-dark-800 border-dark-700 text-slate-600 line-through cursor-not-allowed'
+                          ? 'bg-white border-dark-600 text-gray-700 hover:border-brand-600'
+                          : 'bg-dark-700 border-dark-600 text-gray-400 line-through cursor-not-allowed'
                       }`}
                   >
                     {[v.size, v.color].filter(Boolean).join(' / ') || v.sku}
@@ -122,7 +128,7 @@ export default function ProductDetailPage() {
           {/* Price */}
           <div>
             <p className="text-4xl font-extrabold text-brand-400">
-              ${parseFloat(selectedVariant?.price || 0).toFixed(2)}
+              ${parseFloat(selectedVariant?.price || 0).toLocaleString('es-CO')}
             </p>
             {!inStock && (
               <p className="text-red-400 text-sm mt-1">⚠️ Sin stock disponible</p>
@@ -135,14 +141,14 @@ export default function ProductDetailPage() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                className="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 flex items-center justify-center text-slate-200 font-bold text-lg transition-colors"
+                className="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 flex items-center justify-center text-gray-700 font-bold text-lg transition-colors"
               >
                 −
               </button>
-              <span className="text-xl font-bold text-white w-8 text-center">{quantity}</span>
+              <span className="text-xl font-bold text-gray-900 w-8 text-center">{quantity}</span>
               <button
                 onClick={() => setQuantity(q => q + 1)}
-                className="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 flex items-center justify-center text-slate-200 font-bold text-lg transition-colors"
+                className="w-10 h-10 rounded-xl bg-dark-700 hover:bg-dark-600 flex items-center justify-center text-gray-700 font-bold text-lg transition-colors"
               >
                 +
               </button>

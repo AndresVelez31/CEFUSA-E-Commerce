@@ -37,15 +37,21 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     # DRF
     'rest_framework',
+
     # Apps del proyecto
     'orders',
-    # 'products',   # Descomentar cuando Persona 1 cree la app
-    # 'customers',  # Descomentar cuando Persona 2 cree la app
+    'products',
+    'customers',
+
+    # CORS
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',          # DEBE ir primero
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -128,8 +134,15 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Environment configuration for Factory Pattern
-# Change to 'production' in production environment
 ENV_TYPE = 'development'
+
+# Método de notificación activo.
+# Opciones registradas: 'mock' | 'email' | 'sms' | 'push'
+NOTIFICATION_METHOD = 'mock'
+
+# Pasarela de pago activa.
+# Opciones registradas: 'mock' | 'stripe' | 'mercadopago' | 'paypal'
+PAYMENT_GATEWAY = 'mock'
 
 # Django REST Framework
 REST_FRAMEWORK = {

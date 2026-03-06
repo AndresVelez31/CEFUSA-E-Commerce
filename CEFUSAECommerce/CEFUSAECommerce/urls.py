@@ -3,8 +3,9 @@ from django.contrib import admin
 from django.urls import include, path
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/orders/', include('orders.urls')),
-    # path('api/products/', include('products.urls')),   # Persona 1
-    # path('api/customers/', include('customers.urls')), # Persona 2
+    path('admin/',          admin.site.urls),
+    path('api/orders/',     include('orders.urls')),
+    path('api/customers/',  include('customers.urls')),
+    path('api/admin/',      include('CEFUSAECommerce.admin_urls')),
+    path('api/products/',   include('products.urls')),
 ]

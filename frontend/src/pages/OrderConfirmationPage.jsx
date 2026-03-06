@@ -35,8 +35,8 @@ export default function OrderConfirmationPage() {
         </div>
 
         <div>
-          <h1 className="text-2xl font-extrabold text-white">¡Orden confirmada!</h1>
-          <p className="text-slate-400 mt-2">
+          <h1 className="text-2xl font-extrabold text-gray-900">¡Orden confirmada!</h1>
+          <p className="text-gray-500 mt-2">
             Gracias por tu compra. Recibirás una notificación cuando tu pedido esté en camino.
           </p>
         </div>
@@ -44,23 +44,23 @@ export default function OrderConfirmationPage() {
         {/* Order details */}
         <div className="bg-dark-700 rounded-xl p-4 text-left space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-slate-500">Número de orden</span>
-            <span className="font-mono font-bold text-brand-400">#{order?.order_id || id}</span>
+            <span className="text-gray-500">Número de orden</span>
+            <span className="font-mono font-bold text-brand-600">#{order?.order_id || id}</span>
           </div>
           {order?.total && (
             <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Total pagado</span>
-              <span className="font-bold text-white">${parseFloat(order.total).toFixed(2)}</span>
+              <span className="text-gray-500">Total pagado</span>
+              <span className="font-bold text-gray-900">${parseFloat(order.total).toLocaleString('es-CO')}</span>
             </div>
           )}
           {order?.items_count && (
             <div className="flex justify-between text-sm">
-              <span className="text-slate-500">Artículos</span>
-              <span className="text-slate-300">{order.items_count}</span>
+              <span className="text-gray-500">Artículos</span>
+              <span className="text-gray-700">{order.items_count}</span>
             </div>
           )}
           <div className="flex justify-between text-sm">
-            <span className="text-slate-500">Estado</span>
+            <span className="text-gray-500">Estado</span>
             <span className="badge bg-yellow-900/60 text-yellow-300 border border-yellow-700">
               Pendiente
             </span>
@@ -68,7 +68,7 @@ export default function OrderConfirmationPage() {
         </div>
 
         {order?.message && (
-          <p className="text-sm text-slate-400 italic">"{order.message}"</p>
+            <p className="text-sm text-gray-500 italic">"{order.message}"</p>
         )}
 
         <div className="flex flex-col gap-3 pt-2">
