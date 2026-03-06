@@ -175,8 +175,7 @@ objetos complejos y \textit{Factories} para obtener dependencias externas.
 \section{Capa de Dominio: los Modelos}
 % ═══════════════════════════════════════════════════════════════
 
-Los modelos son la base de datos del sistema. En Django, cada clase Python se convierte
-en una tabla. Aquí están las \textbf{6 entidades} del proyecto (el 60\% del dominio).
+Aquí están las \textbf{6 entidades} del proyecto (el 60\% del dominio).
 
 \subsection{Product y ProductVariant}
 
@@ -1007,13 +1006,6 @@ class AdminDashboardView(APIView):
         return Response(stats)
 \end{lstlisting}
 
-\begin{tipbox}{La regla de las 15 líneas}
-El documento del proyecto dice que una vista con más de 15 líneas probablemente
-tiene lógica que debería estar en el Service. Mira \texttt{AdminDashboardView}:
-3 líneas. \texttt{CreateOrderView}: 14 líneas incluyendo comentarios.
-La vista es solo un \textbf{traductor} entre HTTP y el Service.
-\end{tipbox}
-
 % ═══════════════════════════════════════════════════════════════
 \section{Resumen de los Principios SOLID en el Proyecto}
 % ═══════════════════════════════════════════════════════════════
@@ -1103,22 +1095,39 @@ hasta la base de datos:
 \begin{verbatim}
 CEFUSAECommerce/
  ├── products/          # App independiente: Product, Variant, Inventory
+ │   ├── api/
+ │   │   ├── views.py
+ │   │   └── serializers.py
  │   ├── models.py
  │   ├── services.py    # ProductService
- │   ├── serializers.py
- │   ├── views.py
+ │   ├── urls.py
+ │   ├── admin.py
+ │   ├── apps.py
+ │   ├── tests.py
  │   └── domain/
  │       └── builders.py  # ProductBuilder
+ 
  ├── customers/         # App independiente: Customer
+ │   ├── api/
+ │   │   ├── views.py
+ │   │   └── serializers.py
  │   ├── models.py
  │   ├── services.py    # CustomerService
- │   ├── serializers.py
- │   └── views.py
+ │   ├── urls.py
+ │   ├── admin.py
+ │   ├── apps.py
+ │   └── tests.py
+ 
  └── orders/            # App independiente: Order, OrderItem
+     ├── api/
+     │   ├── views.py
+     │   └── serializers.py
      ├── models.py
      ├── services.py    # OrderService (orquesta todo)
-     ├── serializers.py
-     ├── views.py
+     ├── urls.py
+     ├── admin.py
+     ├── apps.py
+     ├── tests.py
      ├── domain/
      │   └── builders.py   # OrderBuilder (patron Builder)
      └── infra/

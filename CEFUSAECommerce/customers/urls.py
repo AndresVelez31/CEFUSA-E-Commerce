@@ -1,5 +1,5 @@
 from django.urls import path
-from customers.views import CustomerListCreateView, CustomerDetailView, CustomerOrdersView
+from customers.api.views import CustomerListCreateView, CustomerDetailView, CustomerOrdersView
 
 app_name = 'customers'
 

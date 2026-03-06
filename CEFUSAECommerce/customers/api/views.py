@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from customers.services import CustomerService
-from customers.serializers import CustomerSerializer, CreateCustomerSerializer
+from customers.api.serializers import CustomerSerializer, CreateCustomerSerializer
 
 
 class CustomerListCreateView(APIView):
