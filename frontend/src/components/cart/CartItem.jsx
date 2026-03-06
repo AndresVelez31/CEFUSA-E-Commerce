@@ -13,14 +13,14 @@ export default function CartItem({ item }) {
 
       {/* Info */}
       <div className="flex-grow min-w-0">
-        <p className="font-semibold text-slate-100 truncate">{item.product_name}</p>
-        <p className="text-xs text-slate-500 mt-0.5">
+        <p className="font-semibold text-gray-800 truncate">{item.product_name}</p>
+        <p className="text-xs text-gray-500 mt-0.5">
           SKU: {item.sku}
           {item.size  && ` · Talla: ${item.size}`}
           {item.color && ` · Color: ${item.color}`}
         </p>
-        <p className="text-brand-400 font-bold mt-1">
-          ${(parseFloat(item.price) * item.quantity).toFixed(2)}
+        <p className="text-brand-600 font-bold mt-1">
+          ${(parseFloat(item.price) * item.quantity).toLocaleString('es-CO')}
         </p>
       </div>
 
@@ -28,14 +28,14 @@ export default function CartItem({ item }) {
       <div className="flex items-center gap-1.5">
         <button
           onClick={() => updateQuantity(item.variant_id, item.quantity - 1)}
-          className="w-8 h-8 rounded-lg bg-dark-700 hover:bg-dark-600 flex items-center justify-center text-slate-300 transition-colors"
+          className="w-8 h-8 rounded-lg bg-dark-700 hover:bg-dark-600 flex items-center justify-center text-gray-600 transition-colors"
         >
           <MinusIcon className="w-3.5 h-3.5" />
         </button>
-        <span className="w-8 text-center font-semibold text-slate-100">{item.quantity}</span>
+        <span className="w-8 text-center font-semibold text-gray-800">{item.quantity}</span>
         <button
           onClick={() => updateQuantity(item.variant_id, item.quantity + 1)}
-          className="w-8 h-8 rounded-lg bg-dark-700 hover:bg-dark-600 flex items-center justify-center text-slate-300 transition-colors"
+          className="w-8 h-8 rounded-lg bg-dark-700 hover:bg-dark-600 flex items-center justify-center text-gray-600 transition-colors"
         >
           <PlusIcon className="w-3.5 h-3.5" />
         </button>

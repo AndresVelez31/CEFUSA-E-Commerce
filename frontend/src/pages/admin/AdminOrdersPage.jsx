@@ -54,11 +54,11 @@ export default function AdminOrdersPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-slate-100 mb-1">Órdenes</h2>
-          <p className="text-slate-400 text-sm">Gestiona y filtra todas las órdenes</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">Órdenes</h2>
+          <p className="text-gray-500 text-sm">Gestiona y filtra todas las órdenes</p>
         </div>
         <button onClick={() => navigate('/admin/orders/new')}
-          className="flex items-center gap-2 px-4 py-2 bg-sky-500 hover:bg-sky-400
+          className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500
                      text-white text-sm font-medium rounded-lg transition-colors">
           <PlusIcon className="w-4 h-4" /> Nueva orden
         </button>
@@ -70,8 +70,8 @@ export default function AdminOrdersPage() {
           <button key={value} onClick={() => setStatus(value)}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
               statusFilter === value
-                ? 'bg-sky-500 text-white'
-                : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-100'
+                ? 'bg-brand-500 text-white'
+                : 'bg-dark-700 text-gray-600 hover:bg-dark-600 hover:text-gray-900'
             }`}>
             {label}
           </button>
@@ -80,16 +80,16 @@ export default function AdminOrdersPage() {
 
       {/* Tabla */}
       {loading ? (
-        <p className="text-slate-400">Cargando...</p>
+        <p className="text-gray-500">Cargando...</p>
       ) : orders.length === 0 ? (
-        <div className="bg-slate-900 rounded-xl border border-slate-800 p-10 text-center text-slate-400">
+        <div className="bg-dark-800 rounded-xl border border-dark-600 p-10 text-center text-gray-500">
           No hay órdenes con ese filtro.
         </div>
       ) : (
-        <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+        <div className="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 text-left">
+              <tr className="border-b border-dark-600 text-gray-500 text-left">
                 <th className="px-5 py-3 font-medium">#</th>
                 <th className="px-5 py-3 font-medium">Cliente</th>
                 <th className="px-5 py-3 font-medium">Email</th>
@@ -102,30 +102,30 @@ export default function AdminOrdersPage() {
             <tbody>
               {orders.map(order => (
                 <tr key={order.id}
-                  className="border-b border-slate-800/60 hover:bg-slate-800/40 transition-colors">
-                  <td className="px-5 py-3 text-slate-300 font-mono">{order.id}</td>
-                  <td className="px-5 py-3 text-slate-200">{order.customer_nombre}</td>
-                  <td className="px-5 py-3 text-slate-400">{order.customer_email}</td>
-                  <td className="px-5 py-3 text-slate-200 font-medium">
+                  className="border-b border-dark-700/60 hover:bg-dark-700/40 transition-colors">
+                  <td className="px-5 py-3 text-gray-600 font-mono">{order.id}</td>
+                  <td className="px-5 py-3 text-gray-800">{order.customer_nombre}</td>
+                  <td className="px-5 py-3 text-gray-500">{order.customer_email}</td>
+                  <td className="px-5 py-3 text-gray-800 font-medium">
                     ${Number(order.total).toLocaleString('es-CO')}
                   </td>
                   <td className="px-5 py-3">
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full
-                      ${STATUS_BADGE[order.status] ?? 'bg-slate-500/15 text-slate-400'}`}>
+                      ${STATUS_BADGE[order.status] ?? 'bg-gray-200 text-gray-600'}`}>
                       {STATUS_LABEL[order.status] ?? order.status}
                     </span>
                   </td>
-                  <td className="px-5 py-3 text-slate-400">
+                  <td className="px-5 py-3 text-gray-500">
                     {new Date(order.fecha_creacion).toLocaleDateString('es-CO')}
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center justify-center gap-2">
                       <Link to={`/admin/orders/${order.id}`}
-                        className="text-sky-400 hover:text-sky-300 text-xs font-medium transition-colors">
+                        className="text-brand-600 hover:text-brand-500 text-xs font-medium transition-colors">
                         Ver →
                       </Link>
                       <button onClick={() => handleDelete(order.id)}
-                        className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10
+                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50
                                    rounded-lg transition-colors" title="Eliminar">
                         <TrashIcon className="w-4 h-4" />
                       </button>

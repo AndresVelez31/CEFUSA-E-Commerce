@@ -16,13 +16,13 @@ const navItems = [
 
 export default function AdminLayout() {
   return (
-    <div className="flex h-screen bg-slate-950 text-slate-100 overflow-hidden">
+    <div className="flex h-screen bg-dark-900 text-gray-900 overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-60 shrink-0 bg-slate-900 border-r border-slate-800 flex flex-col">
+      <aside className="w-60 shrink-0 bg-dark-800 border-r border-dark-700 flex flex-col">
         {/* Logo */}
-        <div className="px-6 py-5 border-b border-slate-800">
-          <p className="text-lg font-bold text-sky-400 tracking-tight">CEFUSA</p>
-          <p className="text-xs text-slate-500 mt-0.5">Panel de administración</p>
+        <div className="px-6 py-5 border-b border-dark-700">
+          <p className="text-lg font-bold text-brand-400 tracking-tight">CEFUSA</p>
+          <p className="text-xs text-gray-500 mt-0.5">Panel de administración</p>
         </div>
 
         {/* Nav */}
@@ -35,8 +35,8 @@ export default function AdminLayout() {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                   isActive
-                    ? 'bg-sky-500/15 text-sky-400 font-medium'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
+                    ? 'bg-brand-500/15 text-brand-400 font-medium'
+                    : 'text-gray-600 hover:bg-dark-700 hover:text-gray-900'
                 }`
               }
             >
@@ -47,11 +47,11 @@ export default function AdminLayout() {
         </nav>
 
         {/* Footer del sidebar */}
-        <div className="p-3 border-t border-slate-800">
+        <div className="p-3 border-t border-dark-700">
           <a
             href="/"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-slate-400
-                       hover:bg-slate-800 hover:text-slate-100 transition-colors"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600
+                       hover:bg-dark-700 hover:text-gray-900 transition-colors"
           >
             <ArrowLeftOnRectangleIcon className="w-5 h-5 shrink-0" />
             Volver al sitio

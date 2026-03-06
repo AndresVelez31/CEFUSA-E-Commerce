@@ -69,24 +69,24 @@ function CustomerModal({ open, onClose, initial, onSaved }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg mx-4 shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h3 className="text-slate-100 font-semibold">
+      <div className="bg-dark-800 border border-dark-600 rounded-2xl w-full max-w-lg mx-4 shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700">
+          <h3 className="text-gray-900 font-semibold">
             {isEdit ? 'Editar cliente' : 'Nuevo cliente'}
           </h3>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-100 text-xl leading-none">×</button>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-800 text-xl leading-none">×</button>
         </div>
         <form onSubmit={submit} className="p-6">
           <div className="grid grid-cols-2 gap-4">
             {FIELDS.map(({ name, label, type, full }, i) => (
               <div key={name} className={full ? 'col-span-2' : ''}>
-                <label className="block text-xs text-slate-400 mb-1">{label}</label>
+                <label className="block text-xs text-gray-600 mb-1">{label}</label>
                 <input
                   ref={i === 0 ? firstRef : undefined}
                   type={type} name={name} value={form[name]} onChange={change}
-                  className={`w-full bg-slate-800 border rounded-lg px-3 py-2 text-sm text-slate-100
-                    placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition
-                    ${errors[name] ? 'border-red-500' : 'border-slate-700'}`}
+                  className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900
+                    placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition
+                    ${errors[name] ? 'border-red-500' : 'border-dark-600'}`}
                 />
                 {errors[name] && (
                   <p className="text-red-400 text-xs mt-1">
@@ -98,11 +98,11 @@ function CustomerModal({ open, onClose, initial, onSaved }) {
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button type="button" onClick={onClose}
-              className="px-4 py-2 text-sm text-slate-400 hover:text-slate-100 transition-colors">
+              className="px-4 py-2 text-sm text-gray-500 hover:text-gray-800 transition-colors">
               Cancelar
             </button>
             <button type="submit" disabled={saving}
-              className="px-5 py-2 bg-sky-500 hover:bg-sky-400 disabled:opacity-50 text-white
+              className="px-5 py-2 bg-brand-600 hover:bg-brand-500 disabled:opacity-50 text-white
                          text-sm font-medium rounded-lg transition-colors">
               {saving ? 'Guardando…' : isEdit ? 'Guardar cambios' : 'Crear cliente'}
             </button>
@@ -156,11 +156,11 @@ export default function AdminCustomersPage() {
     <div className="p-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-slate-100 mb-1">Clientes</h2>
-          <p className="text-slate-400 text-sm">{customers.length} clientes registrados</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">Clientes</h2>
+          <p className="text-gray-500 text-sm">{customers.length} clientes registrados</p>
         </div>
         <button onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-sky-500 hover:bg-sky-400
+          className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500
                      text-white text-sm font-medium rounded-lg transition-colors">
           <PlusIcon className="w-4 h-4" /> Nuevo cliente
         </button>
@@ -169,22 +169,22 @@ export default function AdminCustomersPage() {
       <div className="mb-5">
         <input type="text" placeholder="Buscar por nombre o email…" value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full max-w-sm bg-slate-900 border border-slate-700 text-slate-100
-                     placeholder-slate-500 rounded-lg px-4 py-2 text-sm
-                     focus:outline-none focus:ring-1 focus:ring-sky-500" />
+          className="w-full max-w-sm bg-white border border-dark-600 text-gray-900
+                     placeholder-gray-400 rounded-lg px-4 py-2 text-sm
+                     focus:outline-none focus:ring-1 focus:ring-brand-500" />
       </div>
 
       {loading ? (
-        <p className="text-slate-400">Cargando...</p>
+        <p className="text-gray-500">Cargando...</p>
       ) : filtered.length === 0 ? (
-        <div className="bg-slate-900 rounded-xl border border-slate-800 p-10 text-center text-slate-400">
+        <div className="bg-dark-800 rounded-xl border border-dark-600 p-10 text-center text-gray-500">
           {search ? 'Sin resultados.' : 'No hay clientes. ¡Crea el primero!'}
         </div>
       ) : (
-        <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+        <div className="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 text-left">
+              <tr className="border-b border-dark-600 text-gray-500 text-left">
                 <th className="px-5 py-3 font-medium">Nombre</th>
                 <th className="px-5 py-3 font-medium">Email</th>
                 <th className="px-5 py-3 font-medium">Teléfono</th>
@@ -196,28 +196,28 @@ export default function AdminCustomersPage() {
             <tbody>
               {filtered.map(c => (
                 <tr key={c.id}
-                  className="border-b border-slate-800/60 hover:bg-slate-800/40 transition-colors">
-                  <td className="px-5 py-3 text-slate-200 font-medium">{c.nombre_completo}</td>
-                  <td className="px-5 py-3 text-slate-400">{c.email}</td>
-                  <td className="px-5 py-3 text-slate-400">{c.telefono || '—'}</td>
-                  <td className="px-5 py-3 text-slate-400 max-w-xs truncate">{c.direccion || '—'}</td>
-                  <td className="px-5 py-3 text-slate-500">
+                  className="border-b border-dark-700/60 hover:bg-dark-700/40 transition-colors">
+                  <td className="px-5 py-3 text-gray-800 font-medium">{c.nombre_completo}</td>
+                  <td className="px-5 py-3 text-gray-500">{c.email}</td>
+                  <td className="px-5 py-3 text-gray-500">{c.telefono || '—'}</td>
+                  <td className="px-5 py-3 text-gray-500 max-w-xs truncate">{c.direccion || '—'}</td>
+                  <td className="px-5 py-3 text-gray-400">
                     {new Date(c.created_at).toLocaleDateString('es-CO')}
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center justify-center gap-2">
                       <button onClick={() => openEdit(c)}
-                        className="p-1.5 text-slate-400 hover:text-sky-400 hover:bg-sky-500/10
+                        className="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50
                                    rounded-lg transition-colors" title="Editar">
                         <PencilIcon className="w-4 h-4" />
                       </button>
                       <button onClick={() => handleDelete(c.id, c.nombre_completo)}
-                        className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10
+                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50
                                    rounded-lg transition-colors" title="Eliminar">
                         <TrashIcon className="w-4 h-4" />
                       </button>
                       <Link to={`/admin/orders`}
-                        className="text-sky-400 hover:text-sky-300 text-xs font-medium transition-colors">
+                        className="text-brand-400 hover:text-brand-300 text-xs font-medium transition-colors">
                         Órdenes →
                       </Link>
                     </div>

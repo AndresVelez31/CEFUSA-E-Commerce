@@ -86,51 +86,51 @@ function ProductModal({ open, onClose, initial, onSaved }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg mx-4 shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h3 className="text-slate-100 font-semibold">
+      <div className="bg-dark-800 border border-dark-600 rounded-2xl w-full max-w-lg mx-4 shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700">
+          <h3 className="text-gray-900 font-semibold">
             {isEdit ? 'Editar producto' : 'Nuevo producto'}
           </h3>
           <button onClick={onClose}
-            className="text-slate-400 hover:text-slate-100 text-xl leading-none">×</button>
+            className="text-gray-400 hover:text-gray-800 text-xl leading-none">×</button>
         </div>
         <form onSubmit={submit} className="p-6 space-y-4">
           <div>
-            <label className="block text-xs text-slate-400 mb-1">Nombre *</label>
+            <label className="block text-xs text-gray-600 mb-1">Nombre *</label>
             <input ref={firstRef} type="text" name="name" value={form.name} onChange={change}
-              className={`w-full bg-slate-800 border rounded-lg px-3 py-2 text-sm text-slate-100
-                placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition
-                ${errors.name ? 'border-red-500' : 'border-slate-700'}`} />
+              className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900
+                placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition
+                ${errors.name ? 'border-red-500' : 'border-dark-600'}`} />
             <FieldError errors={errors} name="name" />
           </div>
           <div>
-            <label className="block text-xs text-slate-400 mb-1">Categoría *</label>
+            <label className="block text-xs text-gray-600 mb-1">Categoría *</label>
             <input type="text" name="category" value={form.category} onChange={change}
-              className={`w-full bg-slate-800 border rounded-lg px-3 py-2 text-sm text-slate-100
-                placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition
-                ${errors.category ? 'border-red-500' : 'border-slate-700'}`} />
+              className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900
+                placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition
+                ${errors.category ? 'border-red-500' : 'border-dark-600'}`} />
             <FieldError errors={errors} name="category" />
           </div>
           <div>
-            <label className="block text-xs text-slate-400 mb-1">Descripción</label>
+            <label className="block text-xs text-gray-600 mb-1">Descripción</label>
             <textarea name="description" value={form.description} onChange={change} rows={3}
-              className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2
-                text-sm text-slate-100 placeholder-slate-500 focus:outline-none
-                focus:ring-1 focus:ring-sky-500 transition resize-none" />
+              className="w-full bg-white border border-dark-600 rounded-lg px-3 py-2
+                text-sm text-gray-900 placeholder-gray-400 focus:outline-none
+                focus:ring-1 focus:ring-brand-500 transition resize-none" />
           </div>
           <div className="flex items-center gap-3">
             <input type="checkbox" id="is_active" name="is_active"
               checked={form.is_active} onChange={change}
-              className="w-4 h-4 accent-sky-500 rounded" />
-            <label htmlFor="is_active" className="text-sm text-slate-300">Activo</label>
+              className="w-4 h-4 accent-brand-500 rounded" />
+            <label htmlFor="is_active" className="text-sm text-gray-700">Activo</label>
           </div>
           <div className="flex justify-end gap-3 pt-2">
             <button type="button" onClick={onClose}
-              className="px-4 py-2 text-sm text-slate-400 hover:text-slate-100 transition-colors">
+              className="px-4 py-2 text-sm text-gray-500 hover:text-gray-800 transition-colors">
               Cancelar
             </button>
             <button type="submit" disabled={saving}
-              className="px-5 py-2 bg-sky-500 hover:bg-sky-400 disabled:opacity-50
+              className="px-5 py-2 bg-brand-600 hover:bg-brand-500 disabled:opacity-50
                          text-white text-sm font-medium rounded-lg transition-colors">
               {saving ? 'Guardando…' : isEdit ? 'Guardar cambios' : 'Crear producto'}
             </button>
@@ -202,13 +202,13 @@ function VariantModal({ open, onClose, productId, initial, onSaved }) {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70">
-      <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md mx-4 shadow-2xl">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h3 className="text-slate-100 font-semibold">
+      <div className="bg-dark-800 border border-dark-600 rounded-2xl w-full max-w-md mx-4 shadow-2xl">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700">
+          <h3 className="text-gray-900 font-semibold">
             {isEdit ? 'Editar variante' : 'Nueva variante'}
           </h3>
           <button onClick={onClose}
-            className="text-slate-400 hover:text-slate-100 text-xl leading-none">×</button>
+            className="text-gray-400 hover:text-gray-800 text-xl leading-none">×</button>
         </div>
         <form onSubmit={submit} className="p-6">
           <div className="grid grid-cols-2 gap-4">
@@ -220,24 +220,24 @@ function VariantModal({ open, onClose, productId, initial, onSaved }) {
               ...(!isEdit ? [{ name: 'initial_stock', label: 'Stock inicial', type: 'number', full: false }] : []),
             ].map(({ name, label, type, full }, i) => (
               <div key={name} className={full ? 'col-span-2' : ''}>
-                <label className="block text-xs text-slate-400 mb-1">{label}</label>
+                <label className="block text-xs text-gray-600 mb-1">{label}</label>
                 <input ref={i === 0 ? firstRef : undefined}
                   type={type} name={name} value={form[name]} onChange={change} min={type === 'number' ? 0 : undefined}
                   step={name === 'price' ? '0.01' : undefined}
-                  className={`w-full bg-slate-800 border rounded-lg px-3 py-2 text-sm text-slate-100
-                    placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition
-                    ${errors[name] ? 'border-red-500' : 'border-slate-700'}`} />
+                  className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900
+                    placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition
+                    ${errors[name] ? 'border-red-500' : 'border-dark-600'}`} />
                 <FieldError errors={errors} name={name} />
               </div>
             ))}
           </div>
           <div className="flex justify-end gap-3 mt-6">
             <button type="button" onClick={onClose}
-              className="px-4 py-2 text-sm text-slate-400 hover:text-slate-100 transition-colors">
+              className="px-4 py-2 text-sm text-gray-500 hover:text-gray-800 transition-colors">
               Cancelar
             </button>
             <button type="submit" disabled={saving}
-              className="px-5 py-2 bg-sky-500 hover:bg-sky-400 disabled:opacity-50
+              className="px-5 py-2 bg-brand-600 hover:bg-brand-500 disabled:opacity-50
                          text-white text-sm font-medium rounded-lg transition-colors">
               {saving ? 'Guardando…' : isEdit ? 'Guardar' : 'Crear variante'}
             </button>
@@ -319,35 +319,35 @@ function VariantsModal({ open, onClose, product, onProductUpdated }) {
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-        <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-3xl mx-4
+        <div className="bg-dark-800 border border-dark-600 rounded-2xl w-full max-w-3xl mx-4
                         shadow-2xl flex flex-col max-h-[90vh]">
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800 shrink-0">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-dark-700 shrink-0">
             <div>
-              <h3 className="text-slate-100 font-semibold">Variantes — {product.name}</h3>
-              <p className="text-slate-500 text-xs mt-0.5">{variants.length} variante(s)</p>
+              <h3 className="text-gray-900 font-semibold">Variantes — {product.name}</h3>
+              <p className="text-gray-500 text-xs mt-0.5">{variants.length} variante(s)</p>
             </div>
             <div className="flex items-center gap-3">
               <button onClick={openCreate}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-500 hover:bg-sky-400
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-600 hover:bg-brand-500
                            text-white text-xs font-medium rounded-lg transition-colors">
                 <PlusIcon className="w-3.5 h-3.5" /> Nueva variante
               </button>
               <button onClick={onClose}
-                className="text-slate-400 hover:text-slate-100 text-xl leading-none">×</button>
+                className="text-gray-400 hover:text-gray-800 text-xl leading-none">×</button>
             </div>
           </div>
 
           {/* Tabla */}
           <div className="overflow-y-auto flex-1">
             {variants.length === 0 ? (
-              <div className="p-10 text-center text-slate-400">
+              <div className="p-10 text-center text-gray-500">
                 Sin variantes. Crea la primera.
               </div>
             ) : (
               <table className="w-full text-sm">
-                <thead className="sticky top-0 bg-slate-900 z-10">
-                  <tr className="border-b border-slate-800 text-slate-400 text-left">
+                <thead className="sticky top-0 bg-dark-800 z-10">
+                  <tr className="border-b border-dark-600 text-gray-500 text-left">
                     <th className="px-5 py-3 font-medium">SKU</th>
                     <th className="px-5 py-3 font-medium">Talla</th>
                     <th className="px-5 py-3 font-medium">Color</th>
@@ -360,11 +360,11 @@ function VariantsModal({ open, onClose, product, onProductUpdated }) {
                 <tbody>
                   {variants.map(v => (
                     <tr key={v.id}
-                      className="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
-                      <td className="px-5 py-3 text-slate-200 font-mono text-xs">{v.sku}</td>
-                      <td className="px-5 py-3 text-slate-400">{v.size || '—'}</td>
-                      <td className="px-5 py-3 text-slate-400">{v.color || '—'}</td>
-                      <td className="px-5 py-3 text-slate-200">
+                      className="border-b border-dark-700/60 hover:bg-dark-700/30 transition-colors">
+                      <td className="px-5 py-3 text-gray-800 font-mono text-xs">{v.sku}</td>
+                      <td className="px-5 py-3 text-gray-500">{v.size || '—'}</td>
+                      <td className="px-5 py-3 text-gray-500">{v.color || '—'}</td>
+                      <td className="px-5 py-3 text-gray-800">
                         ${Number(v.price).toLocaleString('es-CO')}
                       </td>
                       {/* Celda de stock con edición inline */}
@@ -374,21 +374,21 @@ function VariantsModal({ open, onClose, product, onProductUpdated }) {
                             <input type="number" min={0}
                               value={stockEdit[v.id]}
                               onChange={e => setStockEdit(p => ({ ...p, [v.id]: e.target.value }))}
-                              className="w-20 bg-slate-800 border border-sky-500 rounded px-2 py-1
-                                         text-xs text-slate-100 focus:outline-none" />
+                              className="w-20 bg-white border border-brand-500 rounded px-2 py-1
+                                         text-xs text-gray-900 focus:outline-none" />
                             <button onClick={() => saveStock(v)} disabled={savingStock[v.id]}
                               className="text-emerald-400 hover:text-emerald-300 text-xs font-medium
                                          disabled:opacity-50">
                               {savingStock[v.id] ? '…' : 'OK'}
                             </button>
                             <button onClick={() => cancelStockEdit(v.id)}
-                              className="text-slate-400 hover:text-slate-100 text-xs">✕</button>
+                              className="text-gray-400 hover:text-gray-800 text-xs">✕</button>
                           </div>
                         ) : (
                           <button onClick={() => startStockEdit(v)}
-                            className="flex items-center gap-1 text-slate-300 hover:text-sky-400
+                            className="flex items-center gap-1 text-gray-700 hover:text-brand-600
                                        transition-colors group">
-                            <span>{v.inventory?.available_quantity ?? 0}</span>
+                          <span>{v.inventory?.available_quantity ?? 0}</span>
                             <AdjustmentsHorizontalIcon
                               className="w-3.5 h-3.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                           </button>
@@ -405,12 +405,12 @@ function VariantsModal({ open, onClose, product, onProductUpdated }) {
                       <td className="px-5 py-3">
                         <div className="flex items-center justify-center gap-2">
                           <button onClick={() => openEdit(v)}
-                            className="p-1.5 text-slate-400 hover:text-sky-400 hover:bg-sky-500/10
+                            className="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50
                                        rounded-lg transition-colors" title="Editar">
                             <PencilIcon className="w-4 h-4" />
                           </button>
                           <button onClick={() => handleDeleteVariant(v)}
-                            className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10
+                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50
                                        rounded-lg transition-colors" title="Eliminar">
                             <TrashIcon className="w-4 h-4" />
                           </button>
@@ -494,11 +494,11 @@ export default function AdminProductsPage() {
       {/* Cabecera */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold text-slate-100 mb-1">Productos</h2>
-          <p className="text-slate-400 text-sm">{products.length} productos en catálogo</p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-1">Productos</h2>
+          <p className="text-gray-500 text-sm">{products.length} productos en catálogo</p>
         </div>
         <button onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2 bg-sky-500 hover:bg-sky-400
+          className="flex items-center gap-2 px-4 py-2 bg-brand-600 hover:bg-brand-500
                      text-white text-sm font-medium rounded-lg transition-colors">
           <PlusIcon className="w-4 h-4" /> Nuevo producto
         </button>
@@ -508,23 +508,23 @@ export default function AdminProductsPage() {
       <div className="mb-5">
         <input type="text" placeholder="Buscar por nombre o categoría…"
           value={search} onChange={e => setSearch(e.target.value)}
-          className="w-full max-w-sm bg-slate-900 border border-slate-700 text-slate-100
-                     placeholder-slate-500 rounded-lg px-4 py-2 text-sm
-                     focus:outline-none focus:ring-1 focus:ring-sky-500" />
+          className="w-full max-w-sm bg-white border border-dark-600 text-gray-900
+                     placeholder-gray-400 rounded-lg px-4 py-2 text-sm
+                     focus:outline-none focus:ring-1 focus:ring-brand-500" />
       </div>
 
       {/* Tabla */}
       {loading ? (
-        <p className="text-slate-400">Cargando...</p>
+        <p className="text-gray-500">Cargando...</p>
       ) : filtered.length === 0 ? (
-        <div className="bg-slate-900 rounded-xl border border-slate-800 p-10 text-center text-slate-400">
+        <div className="bg-dark-800 rounded-xl border border-dark-600 p-10 text-center text-gray-500">
           {search ? 'Sin resultados.' : 'No hay productos. ¡Crea el primero!'}
         </div>
       ) : (
-        <div className="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
+        <div className="bg-dark-800 rounded-xl border border-dark-700 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-slate-800 text-slate-400 text-left">
+              <tr className="border-b border-dark-600 text-gray-500 text-left">
                 <th className="px-5 py-3 font-medium">#</th>
                 <th className="px-5 py-3 font-medium">Nombre</th>
                 <th className="px-5 py-3 font-medium">Categoría</th>
@@ -536,13 +536,13 @@ export default function AdminProductsPage() {
             <tbody>
               {filtered.map(p => (
                 <tr key={p.id}
-                  className="border-b border-slate-800/60 hover:bg-slate-800/40 transition-colors">
-                  <td className="px-5 py-3 text-slate-500 font-mono text-xs">{p.id}</td>
-                  <td className="px-5 py-3 text-slate-200 font-medium">{p.name}</td>
-                  <td className="px-5 py-3 text-slate-400">{p.category || '—'}</td>
-                  <td className="px-5 py-3 text-slate-400">
+                  className="border-b border-dark-700/60 hover:bg-dark-700/40 transition-colors">
+                  <td className="px-5 py-3 text-gray-400 font-mono text-xs">{p.id}</td>
+                  <td className="px-5 py-3 text-gray-800 font-medium">{p.name}</td>
+                  <td className="px-5 py-3 text-gray-500">{p.category || '—'}</td>
+                  <td className="px-5 py-3">
                     <button onClick={() => openVariants(p)}
-                      className="flex items-center gap-1.5 text-sky-400 hover:text-sky-300
+                      className="flex items-center gap-1.5 text-brand-400 hover:text-brand-300
                                  text-xs font-medium transition-colors">
                       <CubeIcon className="w-3.5 h-3.5" />
                       {(p.variants?.length ?? 0)} variante(s)
@@ -552,19 +552,19 @@ export default function AdminProductsPage() {
                     <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
                       p.is_active
                         ? 'bg-emerald-500/15 text-emerald-400'
-                        : 'bg-slate-500/15 text-slate-400'}`}>
+                        : 'bg-gray-100 text-gray-500'}`}>
                       {p.is_active ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex items-center justify-center gap-2">
                       <button onClick={() => openEditProd(p)}
-                        className="p-1.5 text-slate-400 hover:text-sky-400 hover:bg-sky-500/10
+                        className="p-1.5 text-gray-400 hover:text-brand-600 hover:bg-brand-50
                                    rounded-lg transition-colors" title="Editar">
                         <PencilIcon className="w-4 h-4" />
                       </button>
                       <button onClick={() => handleDelete(p)}
-                        className="p-1.5 text-slate-400 hover:text-red-400 hover:bg-red-500/10
+                        className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50
                                    rounded-lg transition-colors" title="Eliminar">
                         <TrashIcon className="w-4 h-4" />
                       </button>

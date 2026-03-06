@@ -92,19 +92,19 @@ export default function AdminCreateOrderPage() {
     <div className="p-8 max-w-3xl">
       {/* Encabezado */}
       <div className="flex items-center gap-3 mb-6">
-        <Link to="/admin/orders" className="text-slate-400 hover:text-slate-100 text-sm transition-colors">
+        <Link to="/admin/orders" className="text-gray-500 hover:text-gray-800 text-sm transition-colors">
           ← Órdenes
         </Link>
-        <span className="text-slate-700">/</span>
-        <h2 className="text-2xl font-bold text-slate-100">Nueva orden</h2>
+        <span className="text-gray-400">/</span>
+        <h2 className="text-2xl font-bold text-gray-900">Nueva orden</h2>
       </div>
 
       <form onSubmit={submit} className="space-y-6">
 
         {/* Datos del cliente */}
-        <section className="bg-slate-900 rounded-xl border border-slate-800 p-6">
-          <h3 className="text-slate-100 font-semibold mb-4">Datos del cliente</h3>
-          <p className="text-slate-500 text-xs mb-4">
+        <section className="bg-dark-800 rounded-xl border border-dark-700 p-6">
+          <h3 className="text-gray-800 font-semibold mb-4">Datos del cliente</h3>
+          <p className="text-gray-400 text-xs mb-4">
             Si el email ya existe en el sistema, la orden se asociará al cliente existente.
           </p>
           <div className="grid grid-cols-2 gap-4">
@@ -116,14 +116,14 @@ export default function AdminCreateOrderPage() {
               { name: 'direccion', label: 'Dirección', col: 2 },
             ].map(({ name, label, col }) => (
               <div key={name} className={col === 2 ? 'col-span-2' : ''}>
-                <label className="block text-xs text-slate-400 mb-1">{label}</label>
+                <label className="block text-xs text-gray-600 mb-1">{label}</label>
                 <input
                   name={name}
                   value={customer[name]}
                   onChange={changeCustomer}
-                  className={`w-full bg-slate-800 border rounded-lg px-3 py-2 text-sm text-slate-100
-                    placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition
-                    ${errors[`customer.${name}`] ? 'border-red-500' : 'border-slate-700'}`}
+                  className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900
+                    placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500 transition
+                    ${errors[`customer.${name}`] ? 'border-red-500' : 'border-dark-600'}`}
                 />
                 {fieldErr(`customer.${name}`)}
               </div>
@@ -132,11 +132,11 @@ export default function AdminCreateOrderPage() {
         </section>
 
         {/* Productos */}
-        <section className="bg-slate-900 rounded-xl border border-slate-800 p-6">
+        <section className="bg-dark-800 rounded-xl border border-dark-700 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-slate-100 font-semibold">Productos</h3>
+            <h3 className="text-gray-800 font-semibold">Productos</h3>
             <button type="button" onClick={addItem}
-              className="flex items-center gap-1.5 text-xs text-sky-400 hover:text-sky-300 transition-colors">
+              className="flex items-center gap-1.5 text-xs text-brand-400 hover:text-brand-300 transition-colors">
               <PlusIcon className="w-3.5 h-3.5" /> Agregar ítem
             </button>
           </div>
@@ -146,51 +146,51 @@ export default function AdminCreateOrderPage() {
               <div key={i} className="grid grid-cols-12 gap-3 items-start">
                 {/* Producto */}
                 <div className="col-span-5">
-                  {i === 0 && <label className="block text-xs text-slate-400 mb-1">Producto</label>}
+                  {i === 0 && <label className="block text-xs text-gray-600 mb-1">Producto</label>}
                   <input
                     value={it.product_name}
                     onChange={e => changeItem(i, 'product_name', e.target.value)}
                     placeholder="Nombre del producto"
-                    className={`w-full bg-slate-800 border rounded-lg px-3 py-2 text-sm text-slate-100
-                      placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500
-                      ${errors[`items[${i}].product_name`] ? 'border-red-500' : 'border-slate-700'}`}
+                    className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900
+                      placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500
+                      ${errors[`items[${i}].product_name`] ? 'border-red-500' : 'border-dark-600'}`}
                   />
                   {fieldErr(`items[${i}].product_name`)}
                 </div>
                 {/* Cantidad */}
                 <div className="col-span-2">
-                  {i === 0 && <label className="block text-xs text-slate-400 mb-1">Cant.</label>}
+                  {i === 0 && <label className="block text-xs text-gray-600 mb-1">Cant.</label>}
                   <input
                     type="number" min="1"
                     value={it.quantity}
                     onChange={e => changeItem(i, 'quantity', e.target.value)}
-                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2
-                               text-sm text-slate-100 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                    className="w-full bg-white border border-dark-600 rounded-lg px-3 py-2
+                               text-sm text-gray-900 focus:outline-none focus:ring-1 focus:ring-brand-500"
                   />
                 </div>
                 {/* Precio */}
                 <div className="col-span-3">
-                  {i === 0 && <label className="block text-xs text-slate-400 mb-1">Precio unit.</label>}
+                  {i === 0 && <label className="block text-xs text-gray-600 mb-1">Precio unit.</label>}
                   <input
                     type="number" min="0" step="0.01"
                     value={it.price}
                     onChange={e => changeItem(i, 'price', e.target.value)}
                     placeholder="0.00"
-                    className={`w-full bg-slate-800 border rounded-lg px-3 py-2 text-sm text-slate-100
-                      placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500
-                      ${errors[`items[${i}].price`] ? 'border-red-500' : 'border-slate-700'}`}
+                    className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900
+                      placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500
+                      ${errors[`items[${i}].price`] ? 'border-red-500' : 'border-dark-600'}`}
                   />
                   {fieldErr(`items[${i}].price`)}
                 </div>
                 {/* Subtotal + eliminar */}
                 <div className="col-span-2 flex items-end gap-1 pb-0.5">
                   {i === 0 && <div className="h-[21px]" />}
-                  <span className="flex-1 text-right text-sm text-slate-300 pb-2">
-                    ${((Number(it.quantity) || 0) * (parseFloat(it.price) || 0)).toFixed(2)}
+                  <span className="flex-1 text-right text-sm text-gray-700 pb-2">
+                    ${((Number(it.quantity) || 0) * (parseFloat(it.price) || 0)).toLocaleString('es-CO')}
                   </span>
                   {items.length > 1 && (
                     <button type="button" onClick={() => removeItem(i)}
-                      className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-red-500/10
+                      className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50
                                  rounded-lg transition-colors mb-1">
                       <TrashIcon className="w-4 h-4" />
                     </button>
@@ -202,64 +202,64 @@ export default function AdminCreateOrderPage() {
         </section>
 
         {/* Envío y descuento */}
-        <section className="bg-slate-900 rounded-xl border border-slate-800 p-6">
-          <h3 className="text-slate-100 font-semibold mb-4">Envío y descuento</h3>
+        <section className="bg-dark-800 rounded-xl border border-dark-700 p-6">
+          <h3 className="text-gray-800 font-semibold mb-4">Envío y descuento</h3>
           <div className="grid grid-cols-2 gap-4">
             <div className="col-span-2">
-              <label className="block text-xs text-slate-400 mb-1">Dirección de envío</label>
+              <label className="block text-xs text-gray-600 mb-1">Dirección de envío</label>
               <input
                 value={shippingAddress}
                 onChange={e => setShipping(e.target.value)}
                 placeholder="Calle, ciudad, departamento…"
-                className={`w-full bg-slate-800 border rounded-lg px-3 py-2 text-sm text-slate-100
-                  placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-sky-500
-                  ${errors.shipping_address ? 'border-red-500' : 'border-slate-700'}`}
+                className={`w-full bg-white border rounded-lg px-3 py-2 text-sm text-gray-900
+                  placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-brand-500
+                  ${errors.shipping_address ? 'border-red-500' : 'border-dark-600'}`}
               />
               {fieldErr('shipping_address')}
             </div>
             <div>
-              <label className="block text-xs text-slate-400 mb-1">
-                Código de descuento <span className="text-slate-600">(10% si aplica)</span>
+              <label className="block text-xs text-gray-600 mb-1">
+                Código de descuento <span className="text-gray-400">(10% si aplica)</span>
               </label>
               <input
                 value={discountCode}
                 onChange={e => setDiscount(e.target.value)}
                 placeholder="SAVE10"
-                className="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2
-                           text-sm text-slate-100 placeholder-slate-500
-                           focus:outline-none focus:ring-1 focus:ring-sky-500"
+                className="w-full bg-white border border-dark-600 rounded-lg px-3 py-2
+                           text-sm text-gray-900 placeholder-gray-400
+                           focus:outline-none focus:ring-1 focus:ring-brand-500"
               />
             </div>
           </div>
         </section>
 
         {/* Resumen de totales */}
-        <div className="bg-slate-900 rounded-xl border border-slate-800 p-5 space-y-2">
-          <div className="flex justify-between text-sm text-slate-400">
+        <div className="bg-dark-800 rounded-xl border border-dark-700 p-5 space-y-2">
+          <div className="flex justify-between text-sm text-gray-500">
             <span>Subtotal</span>
-            <span>${subtotal.toFixed(2)}</span>
+            <span>${subtotal.toLocaleString('es-CO')}</span>
           </div>
           {hasDiscount && (
             <div className="flex justify-between text-sm text-emerald-400">
               <span>Descuento ({discountCode})</span>
-              <span>−${discountAmt.toFixed(2)}</span>
+              <span>−${discountAmt.toLocaleString('es-CO')}</span>
             </div>
           )}
-          <div className="flex justify-between text-base font-bold text-slate-100
-                          pt-2 border-t border-slate-800">
+          <div className="flex justify-between text-base font-bold text-gray-900
+                          pt-2 border-t border-dark-600">
             <span>Total estimado</span>
-            <span>${total.toFixed(2)}</span>
+            <span>${total.toLocaleString('es-CO')}</span>
           </div>
         </div>
 
         {/* Botones */}
         <div className="flex justify-end gap-3">
           <Link to="/admin/orders"
-            className="px-4 py-2 text-sm text-slate-400 hover:text-slate-100 transition-colors">
+            className="px-4 py-2 text-sm text-gray-500 hover:text-gray-800 transition-colors">
             Cancelar
           </Link>
           <button type="submit" disabled={saving}
-            className="px-6 py-2 bg-sky-500 hover:bg-sky-400 disabled:opacity-50
+            className="px-6 py-2 bg-brand-600 hover:bg-brand-500 disabled:opacity-50
                        text-white text-sm font-medium rounded-lg transition-colors">
             {saving ? 'Creando…' : 'Crear orden'}
           </button>

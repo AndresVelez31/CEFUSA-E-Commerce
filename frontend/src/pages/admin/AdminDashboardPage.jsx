@@ -21,8 +21,8 @@ const CARDS = (stats) => [
     label: 'Total Órdenes',
     value: stats.total_orders,
     icon: ShoppingBagIcon,
-    iconBg: 'bg-sky-500/15',
-    iconColor: 'text-sky-400',
+    iconBg: 'bg-brand-500/15',
+    iconColor: 'text-brand-400',
   },
   {
     label: 'Ingresos Totales',
@@ -59,55 +59,55 @@ export default function AdminDashboardPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="p-8 text-slate-400">Cargando...</div>
-  if (error)   return <div className="p-8 text-red-400">{error}</div>
+  if (loading) return <div className="p-8 text-gray-500">Cargando...</div>
+  if (error)   return <div className="p-8 text-red-500">{error}</div>
 
   const total = stats.total_orders || 1  // evitar división por cero
 
   return (
     <div className="p-8">
-      <h2 className="text-2xl font-bold text-slate-100 mb-1">Dashboard</h2>
-      <p className="text-slate-400 text-sm mb-6">Resumen general de la tienda</p>
+      <h2 className="text-2xl font-bold text-gray-900 mb-1">Dashboard</h2>
+      <p className="text-gray-500 text-sm mb-6">Resumen general de la tienda</p>
 
       {/* Stat cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {CARDS(stats).map(({ label, value, icon: Icon, iconBg, iconColor }) => (
-          <div key={label} className="bg-slate-900 rounded-xl p-5 border border-slate-800">
+          <div key={label} className="bg-dark-800 rounded-xl p-5 border border-dark-700">
             <div className={`w-10 h-10 rounded-lg ${iconBg} flex items-center justify-center mb-3`}>
               <Icon className={`w-5 h-5 ${iconColor}`} />
             </div>
-            <p className="text-2xl font-bold text-slate-100">{value}</p>
-            <p className="text-sm text-slate-400 mt-1">{label}</p>
+            <p className="text-2xl font-bold text-gray-900">{value}</p>
+            <p className="text-sm text-gray-500 mt-1">{label}</p>
           </div>
         ))}
       </div>
 
       {/* Órdenes por estado */}
-      <div className="bg-slate-900 rounded-xl border border-slate-800 p-6">
-        <h3 className="text-slate-100 font-semibold mb-5">Órdenes por estado</h3>
+      <div className="bg-dark-800 rounded-xl border border-dark-700 p-6">
+        <h3 className="text-gray-800 font-semibold mb-5">Órdenes por estado</h3>
         <div className="space-y-3">
           {Object.entries(stats.orders_by_status).map(([key, count]) => {
-            const meta = STATUS_META[key] ?? { label: key, bar: 'bg-slate-500', badge: 'bg-slate-500/15 text-slate-400' }
+            const meta = STATUS_META[key] ?? { label: key, bar: 'bg-gray-400', badge: 'bg-gray-100 text-gray-500' }
             const pct = Math.round((count / total) * 100)
             return (
               <div key={key} className="flex items-center gap-4">
                 <span className={`text-xs font-medium px-2.5 py-1 rounded-full w-28 text-center shrink-0 ${meta.badge}`}>
                   {meta.label}
                 </span>
-                <div className="flex-1 bg-slate-800 rounded-full h-2">
+                <div className="flex-1 bg-dark-700 rounded-full h-2">
                   <div
                     className={`${meta.bar} h-2 rounded-full transition-all`}
                     style={{ width: `${pct}%` }}
                   />
                 </div>
-                <span className="text-sm text-slate-300 w-6 text-right shrink-0">{count}</span>
+                <span className="text-sm text-gray-600 w-6 text-right shrink-0">{count}</span>
               </div>
             )
           })}
         </div>
 
-        <div className="mt-5 pt-4 border-t border-slate-800">
-          <Link to="/admin/orders" className="text-sm text-sky-400 hover:text-sky-300 transition-colors">
+        <div className="mt-5 pt-4 border-t border-dark-700">
+          <Link to="/admin/orders" className="text-sm text-brand-400 hover:text-brand-300 transition-colors">
             Ver todas las órdenes →
           </Link>
         </div>

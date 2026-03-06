@@ -47,8 +47,8 @@ export default function App() {
         <Toaster
           position="top-right"
           toastOptions={{
-            style: { background: '#1e293b', color: '#f1f5f9', border: '1px solid #334155' },
-            success: { iconTheme: { primary: '#0ea5e9', secondary: '#fff' } },
+            style: { background: '#ffffff', color: '#111827', border: '1px solid #e2e8f0' },
+            success: { iconTheme: { primary: '#16a34a', secondary: '#fff' } },
           }}
         />
         <Routes>
