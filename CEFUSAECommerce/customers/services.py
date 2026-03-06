@@ -109,3 +109,40 @@ class CustomerService:
             'orders': customer.orders.all().order_by('-fecha_creacion'),
             'message': 'OK'
         }
+
+    def list_customers(self):
+        """Retorna todos los clientes ordenados por fecha de registro."""
+        return Customer.objects.all().order_by('-created_at')
+
+    def update_customer(self, customer_id: int, data: dict) -> dict:
+        """
+        Actualiza los campos de un cliente existente.
+        Returns: {'success': bool, 'customer': Customer|None, 'message': str}
+        """
+        customer = self.get_customer_by_id(customer_id)
+        if not customer:
+            return {'success': False, 'customer': None,
+                    'message': 'Cliente no encontrado'}
+
+        new_email = data.get('email')
+        if new_email and new_email != customer.email:
+            if Customer.objects.filter(email=new_email).exclude(pk=customer_id).exists():
+                return {'success': False, 'customer': None,
+                        'message': f'El email {new_email} ya está en uso por otro cliente'}
+
+        for field in ('nombre', 'apellido', 'email', 'telefono', 'direccion'):
+            if field in data:
+                setattr(customer, field, data[field])
+        customer.save()
+        return {'success': True, 'customer': customer, 'message': 'Cliente actualizado'}
+
+    def delete_customer(self, customer_id: int) -> dict:
+        """
+        Elimina un cliente.
+        Returns: {'success': bool, 'message': str}
+        """
+        customer = self.get_customer_by_id(customer_id)
+        if not customer:
+            return {'success': False, 'message': 'Cliente no encontrado'}
+        customer.delete()
+        return {'success': True, 'message': 'Cliente eliminado'}

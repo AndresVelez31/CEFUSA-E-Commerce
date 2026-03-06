@@ -1,11 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Sum
 
 from orders.services import OrderService
 from orders.serializers import CheckoutSerializer, OrderSerializer
-from orders.models import Order
 
 
 class CreateOrderView(APIView):
@@ -86,23 +84,8 @@ class AdminDashboardView(APIView):
     """
 
     def get(self, request):
-        from customers.models import Customer
-        orders = Order.objects.all()
-        total_orders    = orders.count()
-        total_revenue   = float(orders.aggregate(t=Sum('total'))['t'] or 0)
-        total_customers = Customer.objects.count()
-        pending_orders  = orders.filter(status='pending').count()
-        orders_by_status = {
-            s: orders.filter(status=s).count()
-            for s, _ in Order.STATUS_CHOICES
-        }
-        return Response({
-            'total_orders':      total_orders,
-            'total_revenue':     total_revenue,
-            'total_customers':   total_customers,
-            'pending_orders':    pending_orders,
-            'orders_by_status':  orders_by_status,
-        })
+        stats = OrderService().get_dashboard_stats()
+        return Response(stats)
 
 
 class AdminOrderListView(APIView):
@@ -113,9 +96,7 @@ class AdminOrderListView(APIView):
 
     def get(self, request):
         status_filter = request.query_params.get('status')
-        qs = Order.objects.select_related('customer').prefetch_related('items').all()
-        if status_filter:
-            qs = qs.filter(status=status_filter)
+        qs = OrderService().list_orders(status_filter)
         return Response(OrderSerializer(qs, many=True).data)
 
     def post(self, request):
@@ -145,10 +126,7 @@ class AdminOrderDetailView(APIView):
     """
 
     def delete(self, request, pk):
-        try:
-            order = Order.objects.get(pk=pk)
-        except Order.DoesNotExist:
-            return Response({'error': 'Orden no encontrada'},
-                            status=status.HTTP_404_NOT_FOUND)
-        order.delete()
+        result = OrderService().delete_order(pk)
+        if not result['success']:
+            return Response({'error': result['message']}, status=status.HTTP_404_NOT_FOUND)
         return Response(status=status.HTTP_204_NO_CONTENT)

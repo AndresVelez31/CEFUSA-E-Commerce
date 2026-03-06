@@ -14,18 +14,13 @@ class CustomerSerializer(serializers.ModelSerializer):
 
 
 class CreateCustomerSerializer(serializers.ModelSerializer):
-    """Serializer de escritura: valida la creación de un cliente."""
+    """Serializer de escritura: valida formato de entrada del cliente.
+    La unicidad de email es responsabilidad del CustomerService (lógica de negocio).
+    """
 
     class Meta:
         model = Customer
         fields = ['nombre', 'apellido', 'email', 'telefono', 'direccion']
-
-    def validate_email(self, value):
-        if Customer.objects.filter(email=value).exists():
-            raise serializers.ValidationError(
-                "Ya existe un cliente registrado con este email."
-            )
-        return value
 
     def validate_nombre(self, value):
         if not value.strip():

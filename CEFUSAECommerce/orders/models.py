@@ -93,7 +93,8 @@ class OrderItem(models.Model):
 
     @property
     def subtotal(self):
-        return self.quantity * self.price
+        """Precio unitario × cantidad al momento de la compra."""
+        return self.price * self.quantity
 
     def __str__(self):
         return f"{self.product_name} x{self.quantity}"

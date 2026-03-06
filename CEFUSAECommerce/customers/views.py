@@ -13,11 +13,8 @@ class CustomerListCreateView(APIView):
     """
 
     def get(self, request):
-        service = CustomerService()
-        from customers.models import Customer
-        customers = Customer.objects.all().order_by('-created_at')
-        serializer = CustomerSerializer(customers, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        customers = CustomerService().list_customers()
+        return Response(CustomerSerializer(customers, many=True).data, status=status.HTTP_200_OK)
 
     def post(self, request):
         serializer = CreateCustomerSerializer(data=request.data)
@@ -84,8 +81,7 @@ class AdminCustomerListView(APIView):
     """
 
     def get(self, request):
-        from customers.models import Customer
-        customers = Customer.objects.all().order_by('-created_at')
+        customers = CustomerService().list_customers()
         return Response(CustomerSerializer(customers, many=True).data)
 
     def post(self, request):
@@ -107,53 +103,26 @@ class AdminCustomerDetailView(APIView):
     DELETE /api/admin/customers/<pk>/  → eliminar
     """
 
-    def _get_customer(self, pk):
-        from customers.models import Customer
-        try:
-            return Customer.objects.get(pk=pk)
-        except Customer.DoesNotExist:
-            return None
-
     def get(self, request, pk):
-        customer = self._get_customer(pk)
+        customer = CustomerService().get_customer_by_id(pk)
         if not customer:
             return Response({'message': 'Cliente no encontrado'},
                             status=status.HTTP_404_NOT_FOUND)
         return Response(CustomerSerializer(customer).data)
 
     def put(self, request, pk):
-        customer = self._get_customer(pk)
-        if not customer:
-            return Response({'message': 'Cliente no encontrado'},
-                            status=status.HTTP_404_NOT_FOUND)
-        # Permitir edición de todos los campos excepto email si ya existe en otro cliente
-        serializer = CreateCustomerSerializer(data=request.data)
-        if not serializer.is_valid():
-            # Si el único error es email duplicado pero es el mismo cliente, filtrarlo
-            errors = serializer.errors.copy()
-            if 'email' in errors:
-                from customers.models import Customer
-                same = Customer.objects.filter(
-                    email=request.data.get('email')
-                ).exclude(pk=pk)
-                if not same.exists():
-                    errors.pop('email')
-            if errors:
-                return Response(errors, status=status.HTTP_400_BAD_REQUEST)
-
-        data = request.data
-        customer.nombre   = data.get('nombre',   customer.nombre)
-        customer.apellido = data.get('apellido', customer.apellido)
-        customer.email    = data.get('email',    customer.email)
-        customer.telefono = data.get('telefono', customer.telefono)
-        customer.direccion= data.get('direccion',customer.direccion)
-        customer.save()
-        return Response(CustomerSerializer(customer).data)
+        result = CustomerService().update_customer(pk, request.data)
+        if not result['success']:
+            err_status = (
+                status.HTTP_409_CONFLICT
+                if 'uso' in result['message']
+                else status.HTTP_404_NOT_FOUND
+            )
+            return Response({'message': result['message']}, status=err_status)
+        return Response(CustomerSerializer(result['customer']).data)
 
     def delete(self, request, pk):
-        customer = self._get_customer(pk)
-        if not customer:
-            return Response({'message': 'Cliente no encontrado'},
-                            status=status.HTTP_404_NOT_FOUND)
-        customer.delete()
+        result = CustomerService().delete_customer(pk)
+        if not result['success']:
+            return Response({'message': result['message']}, status=status.HTTP_404_NOT_FOUND)
         return Response(status=status.HTTP_204_NO_CONTENT)

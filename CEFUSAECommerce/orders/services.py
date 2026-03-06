@@ -100,7 +100,14 @@ class OrderService:
                     quantity=item['quantity'],
                 )
 
-            # 5. Notificar al cliente (no-crítico)
+            # 5. Procesar pago (Factory decide Mock vs Real según ENV_TYPE)
+            payment_result = self.payment_processor.process_payment(float(order.total))
+            if not payment_result['success']:
+                # Si el pago falla lo registramos, pero no revertimos el stock
+                # (en producción aquí iría lógica de compensación)
+                print(f"[Warning] Pago fallido para orden #{order.pk}: {payment_result}")
+
+            # 6. Notificar al cliente (no-crítico)
             try:
                 message = (
                     f"Tu orden #{order.pk} fue creada exitosamente. "
@@ -146,5 +153,37 @@ class OrderService:
             order.status = new_status
             order.save(update_fields=['status'])
             return {'success': True, 'message': f'Estado actualizado a {new_status}'}
+        except Order.DoesNotExist:
+            return {'success': False, 'message': 'Orden no encontrada'}
+
+    def get_dashboard_stats(self) -> dict:
+        """Estadísticas generales para el panel de administración."""
+        from django.db.models import Sum
+        from customers.models import Customer
+        orders = Order.objects.all()
+        return {
+            'total_orders':     orders.count(),
+            'total_revenue':    float(orders.aggregate(t=Sum('total'))['t'] or 0),
+            'total_customers':  Customer.objects.count(),
+            'pending_orders':   orders.filter(status='pending').count(),
+            'orders_by_status': {
+                s: orders.filter(status=s).count()
+                for s, _ in Order.STATUS_CHOICES
+            },
+        }
+
+    def list_orders(self, status_filter: str = None):
+        """Retorna todas las órdenes con filtro opcional por status."""
+        qs = Order.objects.select_related('customer').prefetch_related('items').all()
+        if status_filter:
+            qs = qs.filter(status=status_filter)
+        return qs
+
+    def delete_order(self, order_id: int) -> dict:
+        """Elimina una orden por ID."""
+        try:
+            order = Order.objects.get(pk=order_id)
+            order.delete()
+            return {'success': True, 'message': 'Orden eliminada'}
         except Order.DoesNotExist:
             return {'success': False, 'message': 'Orden no encontrada'}

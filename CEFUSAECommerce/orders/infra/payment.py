@@ -1,7 +1,16 @@
 import random
 
 
-class MockPaymentProcessor:
+class BasePaymentProcessor:
+    """
+    Interfaz base para procesadores de pago (LSP).
+    Cualquier subclase es intercambiable donde se espere un BasePaymentProcessor.
+    """
+    def process_payment(self, amount: float) -> dict:
+        raise NotImplementedError("Las subclases deben implementar process_payment()")
+
+
+class MockPaymentProcessor(BasePaymentProcessor):
     
     def process_payment(self, amount: float) -> dict:
         transaction_id = f"MOCK-{random.randint(100000, 999999)}"
@@ -18,7 +27,7 @@ class MockPaymentProcessor:
         }
 
 
-class RealPaymentProcessor:
+class RealPaymentProcessor(BasePaymentProcessor):
     
     def process_payment(self, amount: float) -> dict:
         print(f"[REAL PAYMENT] Processing ${amount} through payment gateway")
