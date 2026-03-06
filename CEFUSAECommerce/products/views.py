@@ -64,13 +64,10 @@ class ProductDetailView(APIView):
         return Response(ProductSerializer(result['product']).data)
 
     def delete(self, request, pk):
-        try:
-            product = ProductService().get_product_details(pk)
-            product.is_active = False
-            product.save()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except ValueError as e:
-            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
+        result = ProductService().deactivate_product(pk)
+        if not result['success']:
+            return Response({'error': result['message']}, status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # ══════════════════════════════════════════════════════════════════════════════

@@ -121,6 +121,19 @@ class ProductService:
         product.save()
         return {'success': True, 'product': product, 'message': 'Producto actualizado'}
 
+    def deactivate_product(self, product_id: int) -> dict:
+        """
+        Baja lógica: marca el producto como is_active=False.
+        La lógica de negocio vive aquí, no en la vista.
+        """
+        try:
+            product = Product.objects.get(pk=product_id, is_active=True)
+        except Product.DoesNotExist:
+            return {'success': False, 'message': f'Producto con id {product_id} no existe'}
+        product.is_active = False
+        product.save()
+        return {'success': True, 'message': 'Producto desactivado'}
+
     # ─── CRUD de variantes ────────────────────────────────────────────────────
 
     def get_variant(self, variant_id: int) -> ProductVariant:
