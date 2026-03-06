@@ -20,6 +20,7 @@ import AdminOrdersPage from './pages/admin/AdminOrdersPage'
 import AdminOrderDetailPage from './pages/admin/AdminOrderDetailPage'
 import AdminCreateOrderPage from './pages/admin/AdminCreateOrderPage'
 import AdminCustomersPage from './pages/admin/AdminCustomersPage'
+import AdminProductsPage from './pages/admin/AdminProductsPage'
 
 function StoreLayout() {
   return (
@@ -58,6 +59,7 @@ export default function App() {
             <Route path="orders/new"        element={<AdminCreateOrderPage />} />
             <Route path="orders/:id"        element={<AdminOrderDetailPage />} />
             <Route path="customers"         element={<AdminCustomersPage />} />
+            <Route path="products"          element={<AdminProductsPage />} />
           </Route>
 
           {/* Tienda pública — con Navbar/Footer */}

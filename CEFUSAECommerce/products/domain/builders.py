@@ -47,9 +47,7 @@ class ProductBuilder:
     def build(self):
         if not self._name:
             raise ValueError("El nombre del producto es obligatorio")
-        if not self._variants:
-            raise ValueError("Al menos una variante es obligatoria")
-        
+
         product = Product.objects.create(
             name=self._name,
             description=self._description,

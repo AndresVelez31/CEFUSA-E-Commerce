@@ -3,6 +3,7 @@ import {
   HomeIcon,
   ShoppingBagIcon,
   UsersIcon,
+  CubeIcon,
   ArrowLeftOnRectangleIcon,
 } from '@heroicons/react/24/outline'
 
@@ -10,6 +11,7 @@ const navItems = [
   { to: '/admin',           label: 'Dashboard', Icon: HomeIcon,         end: true },
   { to: '/admin/orders',    label: 'Órdenes',   Icon: ShoppingBagIcon },
   { to: '/admin/customers', label: 'Clientes',  Icon: UsersIcon },
+  { to: '/admin/products',  label: 'Productos', Icon: CubeIcon  },
 ]
 
 export default function AdminLayout() {
