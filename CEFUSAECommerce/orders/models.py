@@ -36,12 +36,22 @@ class Order(models.Model):
         max_digits=10, decimal_places=2, default=0,
         validators=[MinValueValidator(0)]
     )
-    
+
     total           = models.DecimalField(
         max_digits=10, decimal_places=2, validators=[MinValueValidator(0)]
     )
     
     tracking_number = models.CharField(max_length=100, null=True, blank=True)
+
+    SHIPPING_STATUS_CHOICES = [
+        ('pending',   'Pendiente'),
+        ('preparing', 'Preparando'),
+        ('shipped',   'Enviado'),
+        ('delivered', 'Entregado'),
+    ]
+    shipping_status = models.CharField(
+        max_length=20, choices=SHIPPING_STATUS_CHOICES, default='pending'
+    )
 
     class Meta:
         verbose_name = 'Orden'
@@ -64,8 +74,12 @@ class OrderItem(models.Model):
     order        = models.ForeignKey(
         Order, related_name='items', on_delete=models.CASCADE
     )
-    # variant_id se reemplaza por FK real cuando esté la app products (Persona 1)
-    variant_id   = models.PositiveIntegerField(null=True, blank=True)
+    variant      = models.ForeignKey(
+        'products.ProductVariant',
+        on_delete=models.PROTECT,
+        null=True, blank=True,
+        related_name='order_items'
+    )
     product_name = models.CharField(max_length=150)   # snapshot del nombre
     quantity     = models.PositiveIntegerField()
     price        = models.DecimalField(                # snapshot del precio

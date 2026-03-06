@@ -33,6 +33,9 @@ class CreateOrderView(APIView):
 
         if result['success']:
             return Response(result, status=status.HTTP_201_CREATED)
+        # 409 Conflict cuando el error es de stock insuficiente
+        if result.get('error_type') == 'stock':
+            return Response(result, status=status.HTTP_409_CONFLICT)
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -129,10 +132,9 @@ class AdminOrderListView(APIView):
             discount_code=data.get('discount_code'),
         )
         if result['success']:
-            order = Order.objects.select_related('customer').prefetch_related('items').get(
-                pk=result['order_id']
-            )
-            return Response(OrderSerializer(order).data, status=status.HTTP_201_CREATED)
+            return Response(result, status=status.HTTP_201_CREATED)
+        if result.get('error_type') == 'stock':
+            return Response(result, status=status.HTTP_409_CONFLICT)
         return Response(result, status=status.HTTP_400_BAD_REQUEST)
 
 

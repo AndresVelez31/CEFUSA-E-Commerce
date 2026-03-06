@@ -25,7 +25,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'fecha_creacion', 'status', 'status_display',
             'direccion_envio', 'discount_code',
             'subtotal', 'discount_amount', 'total',
-            'tracking_number',
+            'shipping_status', 'tracking_number',
             'items',
         ]
         read_only_fields = fields
@@ -34,10 +34,11 @@ class OrderSerializer(serializers.ModelSerializer):
 # ─── Serializers de escritura (checkout) ──────────────────────────────────────
 
 class CheckoutItemSerializer(serializers.Serializer):
-    product_name = serializers.CharField(max_length=150)
+    variant_id   = serializers.IntegerField()                   # requerido: ID real de ProductVariant
     quantity     = serializers.IntegerField(min_value=1)
-    price        = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=0)
-    variant_id   = serializers.IntegerField(required=False, allow_null=True)
+    # product_name y price son opcionales: el backend los genera como snapshot desde la variante
+    product_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
+    price        = serializers.DecimalField(max_digits=10, decimal_places=2, min_value=0, required=False)
 
 
 class CheckoutCustomerSerializer(serializers.Serializer):

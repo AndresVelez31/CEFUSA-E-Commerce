@@ -3,12 +3,17 @@ from orders.models import Order, OrderItem
 
 
 class OrderBuilder:
+    """
+    Builder para construcción de órdenes.
+    Acepta objetos ProductVariant reales: valida stock y genera snapshots
+    automáticamente del nombre y precio en el momento de la compra.
+    """
 
-    DISCOUNT_RATE = Decimal("0.10")  # 10 % de descuento
+    DISCOUNT_RATE = Decimal("0.10")  # 10 % de descuento plano
 
     def __init__(self):
         self._customer = None
-        self._items = []
+        self._items = []   # {'variant': obj, 'quantity': int, 'product_name': str, 'price': Decimal}
         self._direccion_envio = None
         self._discount_code = None
 
@@ -18,29 +23,50 @@ class OrderBuilder:
         self._customer = customer
         return self
 
-    # agrega productos a la orden y guarda el item, verificando cantidades y precios
-    def add_item(self, product_name: str, quantity: int, price: float,
-                 variant_id = None):
+    def add_item(self, variant, quantity: int):
+        """
+        Agrega un item a la orden a partir de un ProductVariant real.
+        Valida stock y captura snapshots de nombre y precio.
+
+        Args:
+            variant: ProductVariant (con .inventory, .price, .product.name)
+            quantity: cantidad a ordenar (> 0)
+
+        Raises:
+            ValueError: si la cantidad es inválida o no hay stock suficiente
+        """
         if quantity <= 0:
             raise ValueError("La cantidad debe ser mayor a 0")
-        if price < 0:
-            raise ValueError("El precio no puede ser negativo")
+
+        # Validar inventario asignado
+        try:
+            inventory = variant.inventory
+        except Exception:
+            raise ValueError(
+                f"La variante '{variant}' no tiene inventario asignado"
+            )
+
+        # Validar stock disponible
+        if not inventory.has_stock(quantity):
+            raise ValueError(
+                f"Stock insuficiente para '{variant.product.name}' "
+                f"({variant.sku}). Disponible: {inventory.available_quantity}, "
+                f"solicitado: {quantity}"
+            )
 
         self._items.append({
-            "product_name": product_name,
+            "variant":      variant,
+            "product_name": variant.product.name,       # snapshot del nombre
             "quantity":     quantity,
-            "price":        Decimal(str(price)),
-            "variant_id":   variant_id,
+            "price":        Decimal(str(variant.price)), # snapshot del precio
         })
         return self
 
-    # guarda la dirección de envío
     def with_shipping_address(self, address: str):
         self._direccion_envio = address
         return self
 
-    # guarda el código de descuento
-    def with_discount(self, discount_code = None):
+    def with_discount(self, discount_code: str = None):
         self._discount_code = discount_code
         return self
 
@@ -54,12 +80,12 @@ class OrderBuilder:
         if not self._direccion_envio:
             raise ValueError("Se requiere una dirección de envío")
 
+        # Cálculos monetarios con los snapshots ya capturados
         subtotal = sum(
             item["quantity"] * item["price"]
             for item in self._items
         )
 
-        # aplica el descuento al total (10% de descuento)
         if self._discount_code:
             discount_amount = subtotal * self.DISCOUNT_RATE
         else:
@@ -67,6 +93,7 @@ class OrderBuilder:
 
         total = subtotal - discount_amount
 
+        # Persistir la orden cabecera
         order = Order.objects.create(
             customer=self._customer,
             direccion_envio=self._direccion_envio,
@@ -76,11 +103,11 @@ class OrderBuilder:
             total=total,
         )
 
-        # guarda cada producto dentro de la orden
+        # Persistir cada item con su FK real a la variante
         for item in self._items:
             OrderItem.objects.create(
                 order=order,
-                variant_id=item["variant_id"],
+                variant=item["variant"],
                 product_name=item["product_name"],
                 quantity=item["quantity"],
                 price=item["price"],

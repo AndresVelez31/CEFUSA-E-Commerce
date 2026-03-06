@@ -2,6 +2,13 @@ from orders.models import Order, OrderItem
 from orders.domain.builders import OrderBuilder
 from orders.infra.factories import NotificationFactory, PaymentProcessorFactory
 from customers.services import CustomerService
+from products.services import ProductService
+
+
+class StockError(ValueError):
+    """Excepción específica para errores de stock insuficiente.
+    El view la captura y devuelve HTTP 409."""
+    pass
 
 
 class OrderService:
@@ -14,6 +21,7 @@ class OrderService:
         self.notifier = notifier or NotificationFactory.create()
         self.payment_processor = payment_processor or PaymentProcessorFactory.create()
         self.customer_service = CustomerService()
+        self.product_service  = ProductService()
 
     # ─── Acción principal ──────────────────────────────────────────────────────
 
@@ -48,7 +56,7 @@ class OrderService:
                 data=customer_data,
             )
 
-            # 3. Construir la orden con el Builder
+            # 3. Resolver variantes y construir la orden con el Builder
             builder = (
                 OrderBuilder()
                 .for_customer(customer)
@@ -56,19 +64,43 @@ class OrderService:
             )
 
             for item in items:
-                builder.add_item(
-                    product_name=item['product_name'],
-                    quantity=item['quantity'],
-                    price=item['price'],
-                    variant_id=item.get('variant_id'),
-                )
+                variant_id = item.get('variant_id')
+                if not variant_id:
+                    raise ValueError(
+                        "Cada item debe incluir 'variant_id' con el ID de la variante del producto."
+                    )
+
+                # Obtener la variante real (con inventory prefetcheado)
+                from products.models import ProductVariant
+                try:
+                    variant = ProductVariant.objects.select_related(
+                        'product', 'inventory'
+                    ).get(pk=variant_id)
+                except ProductVariant.DoesNotExist:
+                    raise ValueError(f"Variante con id {variant_id} no existe.")
+
+                # add_item valida stock internamente y lanza ValueError si no hay
+                try:
+                    builder.add_item(
+                        variant=variant,
+                        quantity=item['quantity'],
+                    )
+                except ValueError as stock_err:
+                    raise StockError(str(stock_err))
 
             if discount_code:
                 builder.with_discount(discount_code)
 
             order = builder.build()
 
-            # 4. Notificar al cliente (no-crítico)
+            # 4. Descontar stock de cada variante
+            for item in items:
+                self.product_service.reserve_stock(
+                    variant_id=item['variant_id'],
+                    quantity=item['quantity'],
+                )
+
+            # 5. Notificar al cliente (no-crítico)
             try:
                 message = (
                     f"Tu orden #{order.pk} fue creada exitosamente. "
@@ -88,6 +120,9 @@ class OrderService:
                 'message':  'Orden creada exitosamente',
             }
 
+        except StockError as e:
+            return {'success': False, 'order_id': None, 'total': None,
+                    'message': str(e), 'error_type': 'stock'}
         except ValueError as e:
             return {'success': False, 'order_id': None, 'total': None, 'message': str(e)}
         except Exception as e:

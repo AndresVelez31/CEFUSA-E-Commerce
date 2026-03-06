@@ -3,9 +3,9 @@ from products.domain.builders import ProductBuilder
 
 class ProductService:
     def __init__(self):
-        self.builder = ProductBuilder()
-        
-    def create_product(self, data: dict) -> Product:
+        pass  # El builder se instancia localmente en create_product
+
+    def create_product(self, data: dict) -> 'Product':
         builder = ProductBuilder()
         builder.with_name(data['name'])
         builder.with_description(data.get('description', ''))
