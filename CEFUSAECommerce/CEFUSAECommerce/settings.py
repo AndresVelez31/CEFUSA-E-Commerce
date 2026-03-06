@@ -136,6 +136,14 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Environment configuration for Factory Pattern
 ENV_TYPE = 'development'
 
+# Método de notificación activo.
+# Opciones registradas: 'mock' | 'email' | 'sms' | 'push'
+NOTIFICATION_METHOD = 'mock'
+
+# Pasarela de pago activa.
+# Opciones registradas: 'mock' | 'stripe' | 'mercadopago' | 'paypal'
+PAYMENT_GATEWAY = 'mock'
+
 # Django REST Framework
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
