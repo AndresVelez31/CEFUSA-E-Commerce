@@ -8,7 +8,8 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        // En Docker, Nginx expone :80 y enruta /api/v2 -> Flask y el resto -> Django.
+        target: 'http://localhost',
         changeOrigin: true,
       }
     }

@@ -1,7 +1,7 @@
 """
 Microservicio de pagos — extrae PaymentProcessorFactory del monolito Django.
 
-Strangler Pattern: este servicio reemplaza gradualmente POST /api/v1/checkout/
+Strangler Pattern: este servicio reemplaza gradualmente POST /api/orders/checkout/
 en el monolito Django, exponiéndose en la nueva ruta /api/v2/checkout/.
 """
 from flask import Flask, request, jsonify
@@ -47,7 +47,7 @@ def checkout():
     """
     Endpoint principal del microservicio.
 
-    Reemplaza POST /api/v1/checkout/ del monolito Django.
+    Reemplaza POST /api/orders/checkout/ del monolito Django.
 
     Body JSON esperado:
         {

@@ -1,15 +1,61 @@
 services:
-
+  db:
+    image: postgres:16-alpine
+    container_name: cefusa_db
+    environment:
+      POSTGRES_DB: cefusa_db
+      POSTGRES_USER: cefusa_user
+      POSTGRES_PASSWORD: cefusa_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cefusa_user -d cefusa_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   django_app:
-    build: .
-    working_dir: /app/CEFUSAECommerce
-    volumes:
-      - .:/app
-    command: python manage.py runserver 0.0.0.0:8000
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cefusa_django
+    environment:
+      DB_ENGINE: postgres
+      DB_NAME: cefusa_db
+      DB_USER: cefusa_user
+      DB_PASSWORD: cefusa_pass
+      DB_HOST: db
+      DB_PORT: "5432"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,django_app,nginx
+    ports:
+      - "8000:8000"
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      db:
+        condition: service_healthy
 
   flask_payment:
-    build: ./flask_payment_service
-    container_name: flask_app
+    build:
+      context: ./flask_payment_service
+      dockerfile: Dockerfile
+    container_name: cefusa_flask
+    environment:
+      ENV_TYPE: development
     ports:
-      - "5001:5000"
+      - "5000:5000"
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: cefusa_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.docker.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - django_app
+      - flask_payment
+
+volumes:
+  postgres_data:
