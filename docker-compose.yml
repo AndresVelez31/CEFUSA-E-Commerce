@@ -1,0 +1,15 @@
+services:
+
+
+  django_app:
+    build: .
+    working_dir: /app/CEFUSAECommerce
+    volumes:
+      - .:/app
+    command: python manage.py runserver 0.0.0.0:8000
+
+  flask_payment:
+    build: ./flask_payment_service
+    container_name: flask_app
+    ports:
+      - "5001:5000"
