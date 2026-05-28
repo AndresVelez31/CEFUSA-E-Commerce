@@ -38,7 +38,7 @@ services:
 
   flask_payment:
     build:
-      context: ./flask_payment_service
+      context: ./services/flask_payment_service
       dockerfile: Dockerfile
     container_name: cefusa_flask
     environment:

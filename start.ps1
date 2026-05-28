@@ -13,22 +13,31 @@ $ROOT = (Get-Location).Path
 # 1. Django (monolito legacy)
 Write-Host "[1/4] Iniciando Django en :8000..." -ForegroundColor Yellow
 Start-Process powershell -ArgumentList "-NoExit", "-Command", `
-    "cd '$ROOT'; Write-Host 'DJANGO :8000' -ForegroundColor Green; venv\Scripts\python CEFUSAECommerce\manage.py runserver"
+    "cd '$ROOT'; Write-Host 'DJANGO :8000' -ForegroundColor Green; .venv\Scripts\python CEFUSAECommerce\manage.py runserver"
 
 Start-Sleep 2
 
 # 2. Flask (microservicio pagos)
 Write-Host "[2/4] Iniciando Flask en :5000..." -ForegroundColor Yellow
 Start-Process powershell -ArgumentList "-NoExit", "-Command", `
-    "cd '$ROOT'; Write-Host 'FLASK :5000' -ForegroundColor Magenta; venv\Scripts\python flask_payment_service\app.py"
+    "cd '$ROOT'; Write-Host 'FLASK :5000' -ForegroundColor Magenta; .venv\Scripts\python services\flask_payment_service\app.py"
 
 Start-Sleep 2
 
 # 3. Nginx (orquestador de trafico)
 Write-Host "[3/4] Iniciando Nginx en :80..." -ForegroundColor Yellow
-Set-Location "$ROOT\nginx-1.27.4"
-Start-Process ".\nginx.exe"
-Set-Location $ROOT
+$nginxDir = "$ROOT\nginx-1.27.4"
+if (Test-Path "$nginxDir\nginx.exe") {
+    # Nginx local descargado
+    Start-Process "$nginxDir\nginx.exe" -WorkingDirectory $nginxDir
+} elseif (Get-Command nginx -ErrorAction SilentlyContinue) {
+    # Nginx instalado en PATH del sistema
+    $confPath = "$ROOT\nginx\nginx.conf"
+    Start-Process nginx -ArgumentList "-c", "`"$confPath`""
+} else {
+    Write-Host "  [WARN] Nginx no encontrado. Descarga nginx en '$nginxDir' o instálalo en el PATH." -ForegroundColor Red
+    Write-Host "         Django y Flask funcionarán, pero sin el reverse proxy en :80." -ForegroundColor Red
+}
 
 Start-Sleep 1
 

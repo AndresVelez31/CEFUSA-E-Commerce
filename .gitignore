@@ -4,6 +4,7 @@
 *.so
 .Python
 __pycache__/
+.pytest_cache/
 *.egg-info/
 dist/
 build/
@@ -34,6 +35,9 @@ db.sqlite3-journal
 # OS
 .DS_Store
 Thumbs.db
+
+# Nginx local (descargado, no versionado)
+nginx-1.27.4/
 
 # Environment variables
 .env
