@@ -29,6 +29,7 @@ services:
       DB_HOST: db
       DB_PORT: "5432"
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,django_app,nginx
+      MS_CUSTOMERS_URL: http://ms_customers:5003
     ports:
       - "8000:8000"
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
@@ -56,6 +57,16 @@ services:
     depends_on:
       - django_app
       - flask_payment
+      - ms_customers
+
+  # ─── Andrés: ms-customers ────────────────────────────────────
+  ms_customers:
+    build:
+      context: ./flask_customers_service
+      dockerfile: Dockerfile
+    container_name: cefusa_ms_customers
+    ports:
+      - "5003:5003"
 
 volumes:
   postgres_data:
