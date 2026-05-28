@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Order, OrderItem
+from django.utils.translation import gettext as _
 
 
 class OrderItemInline(admin.TabularInline):

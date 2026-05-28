@@ -1,4 +1,5 @@
 from decimal import Decimal
+from django.utils.translation import gettext as _
 from orders.models import Order, OrderItem
 
 
@@ -36,22 +37,30 @@ class OrderBuilder:
             ValueError: si la cantidad es inválida o no hay stock suficiente
         """
         if quantity <= 0:
-            raise ValueError("La cantidad debe ser mayor a 0")
+            raise ValueError(_("La cantidad debe ser mayor a 0"))
 
         # Validar inventario asignado
         try:
             inventory = variant.inventory
         except Exception:
             raise ValueError(
-                f"La variante '{variant}' no tiene inventario asignado"
+                _("La variante '%(variant)s' no tiene inventario asignado")
+                % {"variant": variant}
             )
 
         # Validar stock disponible
         if not inventory.has_stock(quantity):
             raise ValueError(
-                f"Stock insuficiente para '{variant.product.name}' "
-                f"({variant.sku}). Disponible: {inventory.available_quantity}, "
-                f"solicitado: {quantity}"
+                _(
+                    "Stock insuficiente para '%(product)s' (%(sku)s). "
+                    "Disponible: %(available)s, solicitado: %(requested)s"
+                )
+                % {
+                    "product": variant.product.name,
+                    "sku": variant.sku,
+                    "available": inventory.available_quantity,
+                    "requested": quantity,
+                }
             )
 
         self._items.append({
@@ -74,11 +83,11 @@ class OrderBuilder:
 
     def build(self) -> Order:
         if not self._customer:
-            raise ValueError("Se requiere un Customer para crear la orden")
+            raise ValueError(_("Se requiere un Customer para crear la orden"))
         if not self._items:
-            raise ValueError("La orden debe tener al menos un item")
+            raise ValueError(_("La orden debe tener al menos un item"))
         if not self._direccion_envio:
-            raise ValueError("Se requiere una dirección de envío")
+            raise ValueError(_("Se requiere una dirección de envío"))
 
         # Cálculos monetarios con los snapshots ya capturados
         subtotal = sum(

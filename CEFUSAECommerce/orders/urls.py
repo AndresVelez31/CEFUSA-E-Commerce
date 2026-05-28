@@ -1,5 +1,6 @@
 from django.urls import path
 from orders.api.views import CreateOrderView, OrderDetailView, OrderStatusUpdateView
+from django.utils.translation import gettext as _
 
 app_name = 'orders'
 

@@ -3,7 +3,8 @@ from orders.domain.builders import OrderBuilder
 from orders.infra.factories import NotificationFactory, PaymentProcessorFactory
 from customers.services import CustomerService
 from products.services import ProductService
-
+from orders.tasks import send_order_notification
+from django.utils.translation import gettext as _
 
 class StockError(ValueError):
     """Excepción específica para errores de stock insuficiente.
@@ -44,11 +45,11 @@ class OrderService:
         try:
             # 1. Validaciones básicas
             if not customer_data:
-                raise ValueError("Los datos del cliente son obligatorios")
+                raise ValueError(_("Los datos del cliente son obligatorios"))
             if not items:
-                raise ValueError("La orden debe tener al menos un item")
+                raise ValueError(_("La orden debe tener al menos un item"))
             if not shipping_address:
-                raise ValueError("La dirección de envío es obligatoria")
+                raise ValueError(_("La dirección de envío es obligatoria"))
 
             # 2. Obtener o crear el cliente
             customer = self.customer_service.get_or_create_customer(
@@ -67,7 +68,7 @@ class OrderService:
                 variant_id = item.get('variant_id')
                 if not variant_id:
                     raise ValueError(
-                        "Cada item debe incluir 'variant_id' con el ID de la variante del producto."
+                        _("Cada item debe incluir 'variant_id' con el ID de la variante del producto.")
                     )
 
                 # Obtener la variante real (con inventory prefetcheado)
@@ -77,7 +78,10 @@ class OrderService:
                         'product', 'inventory'
                     ).get(pk=variant_id)
                 except ProductVariant.DoesNotExist:
-                    raise ValueError(f"Variante con id {variant_id} no existe.")
+                    raise ValueError(
+                        _("Variante con id %(variant_id)s no existe.")
+                        % {"variant_id": variant_id}
+                    )
 
                 # add_item valida stock internamente y lanza ValueError si no hay
                 try:
@@ -108,23 +112,15 @@ class OrderService:
                 print(f"[Warning] Pago fallido para orden #{order.pk}: {payment_result}")
 
             # 6. Notificar al cliente (no-crítico)
-            try:
-                message = (
-                    f"Tu orden #{order.pk} fue creada exitosamente. "
-                    f"Total: ${order.total}"
-                )
-                self.notifier.notify(
-                    user_email=customer.email,
-                    message=message,
-                )
-            except Exception as notify_err:
-                print(f"[Warning] Notificación fallida: {notify_err}")
+
+            send_order_notification.delay(customer.email, order.pk, float(order.total))
+
 
             return {
                 'success':  True,
                 'order_id': order.pk,
                 'total':    float(order.total),
-                'message':  'Orden creada exitosamente',
+                'message':  _("Orden creada exitosamente"),
             }
 
         except StockError as e:
@@ -134,7 +130,7 @@ class OrderService:
             return {'success': False, 'order_id': None, 'total': None, 'message': str(e)}
         except Exception as e:
             return {'success': False, 'order_id': None, 'total': None,
-                    'message': f'Error al crear la orden: {str(e)}'}
+                    'message': _("Error al crear la orden: %(error)s") % {"error": str(e)}}
 
     # ─── Consultas ─────────────────────────────────────────────────────────────
 
@@ -147,14 +143,20 @@ class OrderService:
     def update_status(self, order_id: int, new_status: str) -> dict:
         valid = [c[0] for c in Order.STATUS_CHOICES]
         if new_status not in valid:
-            return {'success': False, 'message': f'Estado inválido. Opciones: {valid}'}
+            return {
+                'success': False,
+                'message': _("Estado inválido. Opciones: %(valid)s") % {"valid": valid},
+            }
         try:
             order = Order.objects.get(pk=order_id)
             order.status = new_status
             order.save(update_fields=['status'])
-            return {'success': True, 'message': f'Estado actualizado a {new_status}'}
+            return {
+                'success': True,
+                'message': _("Estado actualizado a %(status)s") % {"status": new_status},
+            }
         except Order.DoesNotExist:
-            return {'success': False, 'message': 'Orden no encontrada'}
+            return {'success': False, 'message': _("Orden no encontrada")}
 
     def get_dashboard_stats(self) -> dict:
         """Estadísticas generales para el panel de administración."""
@@ -184,6 +186,6 @@ class OrderService:
         try:
             order = Order.objects.get(pk=order_id)
             order.delete()
-            return {'success': True, 'message': 'Orden eliminada'}
+            return {'success': True, 'message': _("Orden eliminada")}
         except Order.DoesNotExist:
-            return {'success': False, 'message': 'Orden no encontrada'}
+            return {'success': False, 'message': _("Orden no encontrada")}
