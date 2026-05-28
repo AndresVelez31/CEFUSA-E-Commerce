@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from rest_framework import serializers
 from customers.models import Customer
 
@@ -24,10 +25,10 @@ class CreateCustomerSerializer(serializers.ModelSerializer):
 
     def validate_nombre(self, value):
         if not value.strip():
-            raise serializers.ValidationError("El nombre no puede estar vacío.")
+            raise serializers.ValidationError(_("El nombre no puede estar vacío."))
         return value.strip()
 
     def validate_apellido(self, value):
         if not value.strip():
-            raise serializers.ValidationError("El apellido no puede estar vacío.")
+            raise serializers.ValidationError(_("El apellido no puede estar vacío."))
         return value.strip()

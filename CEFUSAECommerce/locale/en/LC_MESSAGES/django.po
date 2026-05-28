@@ -1,0 +1,46 @@
+# Django i18n — English
+# CEFUSA E-Commerce
+# Archivo generado con: python manage.py makemessages -l en
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: CEFUSA E-Commerce 2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# customers/services.py
+msgid "Ya existe un cliente con el email %(email)s"
+msgstr "A customer with email %(email)s already exists"
+
+msgid "Cliente creado exitosamente"
+msgstr "Customer created successfully"
+
+msgid "Cliente no encontrado"
+msgstr "Customer not found"
+
+msgid "El email %(email)s ya está en uso por otro cliente"
+msgstr "The email %(email)s is already in use by another customer"
+
+msgid "Cliente actualizado"
+msgstr "Customer updated"
+
+msgid "Cliente eliminado"
+msgstr "Customer deleted"
+
+# customers/api/serializers.py
+msgid "El nombre no puede estar vacío."
+msgstr "First name cannot be empty."
+
+msgid "El apellido no puede estar vacío."
+msgstr "Last name cannot be empty."
+
+# settings.py
+msgid "Español"
+msgstr "Spanish"
+
+msgid "English"
+msgstr "English"

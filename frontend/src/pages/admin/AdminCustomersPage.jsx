@@ -121,7 +121,16 @@ export default function AdminCustomersPage() {
 
   const load = () => {
     setLoading(true)
-    getAdminCustomers().then(setCustomers).finally(() => setLoading(false))
+    getAdminCustomers()
+      .then(data => {
+        // ms-customers no tiene nombre_completo — lo computamos en el front
+        const normalized = (Array.isArray(data) ? data : []).map(c => ({
+          ...c,
+          nombre_completo: c.nombre_completo ?? `${c.nombre} ${c.apellido}`.trim()
+        }))
+        setCustomers(normalized)
+      })
+      .finally(() => setLoading(false))
   }
 
   useEffect(load, [])
@@ -131,8 +140,9 @@ export default function AdminCustomersPage() {
   const closeModal = () => setModal({ open: false, customer: null })
 
   const handleSaved = (saved, isEdit) => {
+    const normalized = { ...saved, nombre_completo: saved.nombre_completo ?? `${saved.nombre} ${saved.apellido}`.trim() }
     setCustomers(prev =>
-      isEdit ? prev.map(c => c.id === saved.id ? saved : c) : [saved, ...prev]
+      isEdit ? prev.map(c => c.id === normalized.id ? normalized : c) : [normalized, ...prev]
     )
   }
 
@@ -149,7 +159,8 @@ export default function AdminCustomersPage() {
 
   const filtered = customers.filter(c => {
     const q = search.toLowerCase()
-    return c.nombre_completo?.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q)
+    const fullName = c.nombre_completo ?? `${c.nombre} ${c.apellido}`.trim()
+    return fullName.toLowerCase().includes(q) || c.email?.toLowerCase().includes(q)
   })
 
   return (
