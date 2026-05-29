@@ -2,7 +2,7 @@ import api from './axios'
 
 /**
  * Información del servicio QuickBite (API externa vía Django).
- * GET /api/integrations/quickbite/info/
+ * GET /api/integrations/ally/
  */
 export const getQuickBiteInfo = () =>
-  api.get('/integrations/quickbite/info/').then(r => r.data)
+  api.get('/integrations/ally/').then(r => r.data)
