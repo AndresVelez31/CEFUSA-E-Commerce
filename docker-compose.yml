@@ -16,6 +16,17 @@ services:
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: cefusa_redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   django_app:
     build:
       context: .
@@ -29,12 +40,39 @@ services:
       DB_HOST: db
       DB_PORT: "5432"
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,django_app,nginx
+      CELERY_BROKER_URL: redis://redis:6379/0
+      MS_PAYMENT_URL: http://flask_payment:5000
+      MS_INVENTORY_URL: http://ms_inventory:5001
+      MS_CART_URL: http://ms_cart:5002
       MS_CUSTOMERS_URL: http://ms_customers:5003
     ports:
       - "8000:8000"
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cefusa_celery
+    command: celery -A CEFUSAECommerce worker -l info
+    working_dir: /app/CEFUSAECommerce
+    environment:
+      DB_ENGINE: postgres
+      DB_NAME: cefusa_db
+      DB_USER: cefusa_user
+      DB_PASSWORD: cefusa_pass
+      DB_HOST: db
+      DB_PORT: "5432"
+      CELERY_BROKER_URL: redis://redis:6379/0
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
         condition: service_healthy
 
   flask_payment:
@@ -47,6 +85,22 @@ services:
     ports:
       - "5000:5000"
 
+  ms_inventory:
+    build:
+      context: ./services/flask_inventory_service
+      dockerfile: Dockerfile
+    container_name: cefusa_ms_inventory
+    ports:
+      - "5001:5001"
+
+  ms_cart:
+    build:
+      context: ./services/flask_cart_service
+      dockerfile: Dockerfile
+    container_name: cefusa_ms_cart
+    ports:
+      - "5002:5002"
+
   nginx:
     image: nginx:1.27-alpine
     container_name: cefusa_nginx
@@ -57,12 +111,14 @@ services:
     depends_on:
       - django_app
       - flask_payment
+      - ms_inventory
+      - ms_cart
       - ms_customers
 
   # ─── Andrés: ms-customers ────────────────────────────────────
   ms_customers:
     build:
-      context: ./flask_customers_service
+      context: ./services/flask_customers_service
       dockerfile: Dockerfile
     container_name: cefusa_ms_customers
     ports:

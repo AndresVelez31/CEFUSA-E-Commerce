@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from rest_framework import serializers
 from orders.models import Order, OrderItem
 
@@ -69,5 +70,5 @@ class CheckoutSerializer(serializers.Serializer):
 
     def validate_items(self, items):
         if not items:
-            raise serializers.ValidationError("La orden debe tener al menos un item.")
+            raise serializers.ValidationError(_("La orden debe tener al menos un item."))
         return items

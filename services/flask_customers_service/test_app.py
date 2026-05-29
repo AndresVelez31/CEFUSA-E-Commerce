@@ -3,8 +3,8 @@ Tests para el microservicio ms-customers.
 Cubre los 7 endpoints: health, list, create, get, get_by_email, update, delete.
 """
 import pytest
-import app as app_module
-from app import app
+import services.flask_customers_service.app as app_module
+from services.flask_customers_service.app import app
 
 
 @pytest.fixture(autouse=True)

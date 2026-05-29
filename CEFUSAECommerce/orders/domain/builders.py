@@ -1,4 +1,5 @@
 from decimal import Decimal
+from django.utils.translation import gettext as _
 from orders.models import Order, OrderItem
 
 
@@ -13,7 +14,8 @@ class OrderBuilder:
 
     def __init__(self):
         self._customer = None
-        self._items = []   # {'variant': obj, 'quantity': int, 'product_name': str, 'price': Decimal}
+        # variant: ProductVariant (legacy) | None si viene de ms-inventory
+        self._items = []
         self._direccion_envio = None
         self._discount_code = None
 
@@ -36,29 +38,73 @@ class OrderBuilder:
             ValueError: si la cantidad es inválida o no hay stock suficiente
         """
         if quantity <= 0:
-            raise ValueError("La cantidad debe ser mayor a 0")
+            raise ValueError(_("La cantidad debe ser mayor a 0"))
 
         # Validar inventario asignado
         try:
             inventory = variant.inventory
         except Exception:
             raise ValueError(
-                f"La variante '{variant}' no tiene inventario asignado"
+                _("La variante '%(variant)s' no tiene inventario asignado")
+                % {"variant": variant}
             )
 
         # Validar stock disponible
         if not inventory.has_stock(quantity):
             raise ValueError(
-                f"Stock insuficiente para '{variant.product.name}' "
-                f"({variant.sku}). Disponible: {inventory.available_quantity}, "
-                f"solicitado: {quantity}"
+                _(
+                    "Stock insuficiente para '%(product)s' (%(sku)s). "
+                    "Disponible: %(available)s, solicitado: %(requested)s"
+                )
+                % {
+                    "product": variant.product.name,
+                    "sku": variant.sku,
+                    "available": inventory.available_quantity,
+                    "requested": quantity,
+                }
             )
 
         self._items.append({
             "variant":      variant,
+            "variant_id":   variant.pk,
             "product_name": variant.product.name,       # snapshot del nombre
             "quantity":     quantity,
             "price":        Decimal(str(variant.price)), # snapshot del precio
+        })
+        return self
+
+    def add_item_snapshot(
+        self,
+        variant_id: int,
+        product_name: str,
+        quantity: int,
+        price,
+        available_quantity: int,
+    ):
+        """
+        Agrega un item usando datos del microservicio ms-inventory.
+        Valida stock contra la cantidad reportada por el MS.
+        """
+        if quantity <= 0:
+            raise ValueError(_("La cantidad debe ser mayor a 0"))
+        if available_quantity < quantity:
+            raise ValueError(
+                _(
+                    "Stock insuficiente para '%(product)s'. "
+                    "Disponible: %(available)s, solicitado: %(requested)s"
+                )
+                % {
+                    "product": product_name,
+                    "available": available_quantity,
+                    "requested": quantity,
+                }
+            )
+        self._items.append({
+            "variant":      None,
+            "variant_id":   variant_id,
+            "product_name": product_name,
+            "quantity":     quantity,
+            "price":        Decimal(str(price)),
         })
         return self
 
@@ -74,11 +120,11 @@ class OrderBuilder:
 
     def build(self) -> Order:
         if not self._customer:
-            raise ValueError("Se requiere un Customer para crear la orden")
+            raise ValueError(_("Se requiere un Customer para crear la orden"))
         if not self._items:
-            raise ValueError("La orden debe tener al menos un item")
+            raise ValueError(_("La orden debe tener al menos un item"))
         if not self._direccion_envio:
-            raise ValueError("Se requiere una dirección de envío")
+            raise ValueError(_("Se requiere una dirección de envío"))
 
         # Cálculos monetarios con los snapshots ya capturados
         subtotal = sum(
@@ -103,11 +149,10 @@ class OrderBuilder:
             total=total,
         )
 
-        # Persistir cada item con su FK real a la variante
         for item in self._items:
             OrderItem.objects.create(
                 order=order,
-                variant=item["variant"],
+                variant=item.get("variant"),
                 product_name=item["product_name"],
                 quantity=item["quantity"],
                 price=item["price"],

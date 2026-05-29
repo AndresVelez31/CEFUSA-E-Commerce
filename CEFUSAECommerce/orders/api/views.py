@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.utils.translation import gettext as _
 
 from orders.services import OrderService
 from orders.api.serializers import CheckoutSerializer, OrderSerializer
@@ -48,7 +49,7 @@ class OrderDetailView(APIView):
         order = service.get_order(pk)
         if not order:
             return Response(
-                {'error': 'Orden no encontrada'},
+                {'error': _("Orden no encontrada")},
                 status=status.HTTP_404_NOT_FOUND
             )
         return Response(OrderSerializer(order).data)
@@ -65,7 +66,7 @@ class OrderStatusUpdateView(APIView):
         new_status = request.data.get('status')
         if not new_status:
             return Response(
-                {'error': 'El campo "status" es obligatorio'},
+                {'error': _("El campo \"status\" es obligatorio")},
                 status=status.HTTP_400_BAD_REQUEST
             )
         service = OrderService()

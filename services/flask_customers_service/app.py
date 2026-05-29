@@ -97,6 +97,57 @@ def get_customer(customer_id):
     return jsonify(dict(c)), 200
 
 
+@app.route("/api/v2/customers/upsert/", methods=["POST"])
+def upsert_customer():
+    """Crear o actualizar cliente por email (checkout / Django)."""
+    data = request.get_json() or {}
+    email = data.get("email")
+    if not email:
+        return jsonify({"success": False, "error": "Email es requerido"}), 400
+    if not data.get("nombre") or not data.get("apellido"):
+        return jsonify({"success": False, "error": "Nombre y apellido son requeridos"}), 400
+
+    db = get_db()
+    existing = db.execute(
+        "SELECT * FROM customers WHERE email = ?", (email,)
+    ).fetchone()
+
+    if existing:
+        db.execute(
+            "UPDATE customers SET nombre=?, apellido=?, telefono=?, direccion=? WHERE id=?",
+            (
+                data.get("nombre", existing["nombre"]),
+                data.get("apellido", existing["apellido"]),
+                data.get("telefono", existing["telefono"]),
+                data.get("direccion", existing["direccion"]),
+                existing["id"],
+            ),
+        )
+        db.commit()
+        customer = db.execute(
+            "SELECT * FROM customers WHERE id = ?", (existing["id"],)
+        ).fetchone()
+        db.close()
+        return jsonify({"success": True, "customer": dict(customer), "created": False}), 200
+
+    db.execute(
+        "INSERT INTO customers (nombre, apellido, email, telefono, direccion) VALUES (?, ?, ?, ?, ?)",
+        (
+            data["nombre"],
+            data["apellido"],
+            email,
+            data.get("telefono", ""),
+            data.get("direccion", ""),
+        ),
+    )
+    db.commit()
+    customer = db.execute(
+        "SELECT * FROM customers WHERE email = ?", (email,)
+    ).fetchone()
+    db.close()
+    return jsonify({"success": True, "customer": dict(customer), "created": True}), 201
+
+
 @app.route("/api/v2/customers/by-email/", methods=["GET"])
 def get_customer_by_email():
     """Buscar un cliente por email. Útil para el checkout.

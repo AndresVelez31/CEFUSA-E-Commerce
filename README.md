@@ -155,17 +155,22 @@ docker compose up --build
 ```
 
 ```bash
-# Seed de datos de prueba
-docker compose exec django_app sh -lc "cd /app/CEFUSAECommerce ; python seed_products.py"
+# Catálogo (tienda + admin productos → ms-inventory)
+docker compose exec ms_inventory python seed_products.py
+
+# Órdenes de demo en Django (opcional, admin órdenes)
 docker compose exec django_app sh -lc "cd /app/CEFUSAECommerce ; python seed_customers_orders.py"
 ```
 
-| Servicio | URL |
-|---|---|
-| API via Nginx | `http://localhost` |
-| Django directo | `http://localhost:8000` |
-| Flask directo | `http://localhost:5000` |
-| Frontend | `http://localhost:3000` |
+| Servicio | URL | Rol |
+|---|---|---|
+| API via Nginx | `http://localhost` | **Usar siempre desde el frontend** |
+| ms-inventory | `http://localhost:5001` | Productos / stock |
+| ms-cart | `http://localhost:5002` | Carrito |
+| ms-customers | `http://localhost:5003` | Clientes |
+| flask-payment | `http://localhost:5000` | Pagos (vía Django checkout) |
+| Django | `http://localhost:8000` | Órdenes y admin |
+| Frontend | `http://localhost:3000` | React (proxy → Nginx) |
 
 ### 💻 Local (Windows)
 
