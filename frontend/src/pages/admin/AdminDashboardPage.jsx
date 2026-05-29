@@ -7,6 +7,7 @@ import {
   ClockIcon,
 } from '@heroicons/react/24/outline'
 import { getDashboard } from '../../api/admin'
+import QuickBiteInfoCard from '../../components/admin/QuickBiteInfoCard'
 
 const STATUS_META = {
   pending:   { label: 'Pendiente',   bar: 'bg-yellow-500', badge: 'bg-yellow-500/15 text-yellow-400' },
@@ -55,21 +56,31 @@ export default function AdminDashboardPage() {
   useEffect(() => {
     getDashboard()
       .then(setStats)
-      .catch(() => setError('No se pudo conectar con el servidor'))
+      .catch(() =>
+        setError(
+          'No se pudo cargar el resumen. ¿Django en :8000? Reinicia el frontend (npm run dev) tras .\start.ps1'
+        )
+      )
       .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="p-8 text-gray-500">Cargando...</div>
-  if (error)   return <div className="p-8 text-red-500">{error}</div>
-
-  const total = stats.total_orders || 1  // evitar división por cero
+  const total = stats?.total_orders || 1
 
   return (
     <div className="p-8">
       <h2 className="text-2xl font-bold text-gray-900 mb-1">Dashboard</h2>
       <p className="text-gray-500 text-sm mb-6">Resumen general de la tienda</p>
 
+      {loading && <p className="text-gray-500 mb-6">Cargando estadísticas...</p>}
+
+      {error && (
+        <div className="mb-6 p-4 rounded-lg border border-amber-300 bg-amber-50 text-amber-800 text-sm">
+          {error}
+        </div>
+      )}
+
       {/* Stat cards */}
+      {stats && (
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {CARDS(stats).map(({ label, value, icon: Icon, iconBg, iconColor }) => (
           <div key={label} className="bg-dark-800 rounded-xl p-5 border border-dark-700">
@@ -81,9 +92,14 @@ export default function AdminDashboardPage() {
           </div>
         ))}
       </div>
+      )}
 
-      {/* Órdenes por estado */}
-      <div className="bg-dark-800 rounded-xl border border-dark-700 p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <QuickBiteInfoCard />
+
+        {/* Órdenes por estado */}
+        {stats ? (
+        <div className="bg-dark-800 rounded-xl border border-dark-700 p-6">
         <h3 className="text-gray-800 font-semibold mb-5">Órdenes por estado</h3>
         <div className="space-y-3">
           {Object.entries(stats.orders_by_status).map(([key, count]) => {
@@ -111,6 +127,14 @@ export default function AdminDashboardPage() {
             Ver todas las órdenes →
           </Link>
         </div>
+        </div>
+        ) : (
+          !loading && (
+            <div className="bg-dark-800 rounded-xl border border-dark-700 p-6 text-gray-500 text-sm">
+              Las órdenes por estado aparecerán cuando Django responda en el puerto 8000.
+            </div>
+          )
+        )}
       </div>
     </div>
   )

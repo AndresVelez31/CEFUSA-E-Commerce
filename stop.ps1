@@ -20,6 +20,16 @@ if (Test-Path "$nginxDir\nginx.exe") {
 Get-Process -Name "python" -ErrorAction SilentlyContinue | Stop-Process -Force
 Write-Host "  [OK] Django y Flask detenidos" -ForegroundColor Green
 
+# Liberar puerto 8000 si quedó ocupado (p. ej. Docker u otro Django viejo)
+$on8000 = Get-NetTCPConnection -LocalPort 8000 -ErrorAction SilentlyContinue |
+    Select-Object -ExpandProperty OwningProcess -Unique
+foreach ($pid in $on8000) {
+    if ($pid -and $pid -ne 0) {
+        Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue
+        Write-Host "  [OK] Proceso en puerto 8000 detenido (PID $pid)" -ForegroundColor Green
+    }
+}
+
 Write-Host ""
 Write-Host "Todos los servicios detenidos." -ForegroundColor Cyan
 Write-Host ""

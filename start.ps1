@@ -13,7 +13,7 @@ $ROOT = (Get-Location).Path
 # 1. Django (monolito legacy)
 Write-Host "[1/4] Iniciando Django en :8000..." -ForegroundColor Yellow
 Start-Process powershell -ArgumentList "-NoExit", "-Command", `
-    "cd '$ROOT'; Write-Host 'DJANGO :8000' -ForegroundColor Green; .venv\Scripts\python CEFUSAECommerce\manage.py runserver"
+    "cd '$ROOT\CEFUSAECommerce'; Write-Host 'DJANGO :8000' -ForegroundColor Green; ..\.venv\Scripts\python manage.py runserver 0.0.0.0:8000"
 
 Start-Sleep 2
 
@@ -55,10 +55,14 @@ Write-Host "  Todo corriendo. Verificando..." -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Green
 Write-Host ""
 Write-Host "  Django (legacy)  ->  http://localhost:8000/api/products/" -ForegroundColor White
+Write-Host "  QuickBite proxy  ->  http://localhost:8000/api/integrations/quickbite/info/" -ForegroundColor White
 Write-Host "  Flask  (pagos)   ->  http://localhost:5000/health" -ForegroundColor White
 Write-Host "  Nginx  (router)  ->  http://localhost/api/products/" -ForegroundColor White
 Write-Host "                       http://localhost/api/v2/checkout/" -ForegroundColor White
 Write-Host "  Frontend (React) ->  http://localhost:3000" -ForegroundColor White
 Write-Host ""
 Write-Host "  Para detener todo: .\stop.ps1" -ForegroundColor Red
+Write-Host ""
+Write-Host "  NOTA: El frontend (Vite) envia /api a Django :8000." -ForegroundColor DarkGray
+Write-Host "        Reinicia npm run dev si ya estaba abierto antes de este cambio." -ForegroundColor DarkGray
 Write-Host ""
