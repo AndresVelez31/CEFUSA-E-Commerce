@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'orders',
     'products',
     'customers',
+    'integrations',
 
     # CORS
     'corsheaders',
@@ -204,4 +205,5 @@ MS_INVENTORY_URL = os.getenv('MS_INVENTORY_URL', 'http://localhost:5001')
 MS_CART_URL = os.getenv('MS_CART_URL', 'http://localhost:5002')
 MS_CUSTOMERS_URL = os.getenv('MS_CUSTOMERS_URL', 'http://localhost:5003')
 MS_SHIPPING_URL = os.getenv('MS_SHIPPING_URL', 'http://localhost:5004')
+QUICKBITE_API_URL = os.getenv('QUICKBITE_API_URL', 'http://107.23.134.243')
 ALLY_SERVICE_URL = os.getenv('ALLY_SERVICE_URL', 'http://localhost:9000')
