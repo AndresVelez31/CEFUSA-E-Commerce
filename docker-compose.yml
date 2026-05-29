@@ -46,6 +46,7 @@ services:
       MS_CART_URL: http://ms_cart:5002
       MS_CUSTOMERS_URL: http://ms_customers:5003
       QUICKBITE_API_URL: http://107.23.134.243
+      MS_SHIPPING_URL: http://ms_shipping:5004
     ports:
       - "8000:8000"
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
@@ -115,6 +116,7 @@ services:
       - ms_inventory
       - ms_cart
       - ms_customers
+      - ms_shipping
 
   # ─── Andrés: ms-customers ────────────────────────────────────
   ms_customers:
@@ -124,6 +126,14 @@ services:
     container_name: cefusa_ms_customers
     ports:
       - "5003:5003"
+
+  ms_shipping:
+    build:
+      context: ./services/flask_shipping_service
+      dockerfile: Dockerfile
+    container_name: cefusa_ms_shipping
+    ports:
+      - "5004:5004"
 
 volumes:
   postgres_data:

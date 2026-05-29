@@ -1,5 +1,6 @@
 from products.models import Product, ProductVariant, Inventory
 from products.domain.builders import ProductBuilder
+from django.utils.translation import gettext as _
 
 class ProductService:
     def __init__(self):
@@ -41,14 +42,14 @@ class ProductService:
                 ).get(id=product_id, is_active=True)
             
         except Product.DoesNotExist:
-            raise ValueError(f"Producto con id {product_id} no existe")
+            raise ValueError(_("Producto con id %(product_id)s no existe") % {"product_id": product_id})
         
     def check_availability(self, variant_id: int, quantity: int) -> dict:
         try:
             variant = ProductVariant.objects.select_related('inventory').get(id=variant_id)
         
         except ProductVariant.DoesNotExist:
-            raise ValueError(f"Variante con id {variant_id} no existe")
+            raise ValueError(_("Variante con id %(variant_id)s no existe") % {"variant_id": variant_id})
         
         inventory = variant.inventory
         
@@ -63,14 +64,16 @@ class ProductService:
             variant = ProductVariant.objects.select_related('inventory').get(id=variant_id)
         
         except ProductVariant.DoesNotExist:
-            raise ValueError(f"Variante con id {variant_id} no existe")
+            raise ValueError(_("Variante con id %(variant_id)s no existe") % {"variant_id": variant_id})
         
         inventory = variant.inventory
         
         if not inventory.has_stock(quantity):
             return {
                 'success': False,
-                'message': f"Stock insuficiente. Disponible: {inventory.available_quantity}, solicitado: {quantity}"
+                'message': _(
+                    "Stock insuficiente. Disponible: %(available)s, solicitado: %(requested)s"
+                ) % {"available": inventory.available_quantity, "requested": quantity}
             }
             
         inventory.available_quantity -= quantity
@@ -78,7 +81,9 @@ class ProductService:
         
         return {
             'success': True,
-            'message': f"Stock reservado exitosamente. Restante: {inventory.available_quantity}"
+            'message': _("Stock reservado exitosamente. Restante: %(remaining)s") % {
+                "remaining": inventory.available_quantity
+            }
         }
         
         
@@ -87,10 +92,10 @@ class ProductService:
             inventory = Inventory.objects.select_related('product_variant').get(product_variant__id=variant_id)
             
         except Inventory.DoesNotExist:
-            raise ValueError(f"Variante con id {variant_id} no existe")
+            raise ValueError(_("Variante con id %(variant_id)s no existe") % {"variant_id": variant_id})
         
         if quantity < 0:
-            raise ValueError("La cantidad no puede ser negativa")
+            raise ValueError(_("La cantidad no puede ser negativa"))
         
         inventory.available_quantity = quantity
         inventory.save()
@@ -112,14 +117,14 @@ class ProductService:
             product = Product.objects.get(pk=product_id)
         except Product.DoesNotExist:
             return {'success': False, 'product': None,
-                    'message': f'Producto con id {product_id} no existe'}
+                'message': _("Producto con id %(product_id)s no existe") % {"product_id": product_id}}
 
         updatable = ('name', 'description', 'category', 'is_active')
         for field in updatable:
             if field in data:
                 setattr(product, field, data[field])
         product.save()
-        return {'success': True, 'product': product, 'message': 'Producto actualizado'}
+        return {'success': True, 'product': product, 'message': _("Producto actualizado")}
 
     def deactivate_product(self, product_id: int) -> dict:
         """
@@ -129,10 +134,10 @@ class ProductService:
         try:
             product = Product.objects.get(pk=product_id, is_active=True)
         except Product.DoesNotExist:
-            return {'success': False, 'message': f'Producto con id {product_id} no existe'}
+            return {'success': False, 'message': _("Producto con id %(product_id)s no existe") % {"product_id": product_id}}
         product.is_active = False
         product.save()
-        return {'success': True, 'message': 'Producto desactivado'}
+        return {'success': True, 'message': _("Producto desactivado")}
 
     # ─── CRUD de variantes ────────────────────────────────────────────────────
 
@@ -145,7 +150,7 @@ class ProductService:
                 'product', 'inventory'
             ).get(pk=variant_id)
         except ProductVariant.DoesNotExist:
-            raise ValueError(f'Variante con id {variant_id} no existe')
+            raise ValueError(_("Variante con id %(variant_id)s no existe") % {"variant_id": variant_id})
 
     def add_variant_to_product(self, product_id: int, variant_data: dict) -> dict:
         """
@@ -156,11 +161,11 @@ class ProductService:
             product = Product.objects.get(pk=product_id)
         except Product.DoesNotExist:
             return {'success': False, 'variant': None,
-                    'message': f'Producto con id {product_id} no existe'}
+                'message': _("Producto con id %(product_id)s no existe") % {"product_id": product_id}}
 
         if ProductVariant.objects.filter(sku=variant_data['sku']).exists():
             return {'success': False, 'variant': None,
-                    'message': f"El SKU '{variant_data['sku']}' ya está en uso"}
+                'message': _("El SKU '%(sku)s' ya está en uso") % {"sku": variant_data['sku']}}
 
         variant = ProductVariant.objects.create(
             product=product,
@@ -174,7 +179,7 @@ class ProductService:
             available_quantity=variant_data.get('initial_stock', 0),
         )
         return {'success': True, 'variant': variant,
-                'message': 'Variante añadida exitosamente'}
+            'message': _("Variante añadida exitosamente")}
 
     def update_variant(self, variant_id: int, data: dict) -> dict:
         """
@@ -185,14 +190,14 @@ class ProductService:
             variant = ProductVariant.objects.get(pk=variant_id)
         except ProductVariant.DoesNotExist:
             return {'success': False, 'variant': None,
-                    'message': f'Variante con id {variant_id} no existe'}
+                'message': _("Variante con id %(variant_id)s no existe") % {"variant_id": variant_id}}
 
         # Verificar unicidad del SKU si se cambia
         new_sku = data.get('sku')
         if new_sku and new_sku != variant.sku:
             if ProductVariant.objects.filter(sku=new_sku).exists():
                 return {'success': False, 'variant': None,
-                        'message': f"El SKU '{new_sku}' ya está en uso"}
+                        'message': _("El SKU '%(sku)s' ya está en uso") % {"sku": new_sku}}
 
         updatable = ('sku', 'size', 'color', 'price', 'is_available')
         for field in updatable:
@@ -200,7 +205,7 @@ class ProductService:
                 setattr(variant, field, data[field])
         variant.save()
         return {'success': True, 'variant': variant,
-                'message': 'Variante actualizada exitosamente'}
+            'message': _("Variante actualizada exitosamente")}
 
     def delete_variant(self, variant_id: int) -> dict:
         """
@@ -212,11 +217,11 @@ class ProductService:
             variant = ProductVariant.objects.prefetch_related('order_items').get(pk=variant_id)
         except ProductVariant.DoesNotExist:
             return {'success': False,
-                    'message': f'Variante con id {variant_id} no existe'}
+                'message': _("Variante con id %(variant_id)s no existe") % {"variant_id": variant_id}}
 
         if variant.order_items.exists():
-            return {'success': False,
-                    'message': 'No se puede eliminar una variante que tiene órdenes asociadas'}
+                return {'success': False,
+                    'message': _("No se puede eliminar una variante que tiene ordenes asociadas")}
 
         variant.delete()  # CASCADE elimina el Inventory automáticamente
-        return {'success': True, 'message': 'Variante eliminada exitosamente'}
+        return {'success': True, 'message': _("Variante eliminada exitosamente")}
