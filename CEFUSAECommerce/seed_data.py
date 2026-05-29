@@ -24,6 +24,11 @@ from orders.models import Order, OrderItem
 
 print("🌱 Iniciando seed de datos CEFUSA...")
 
+if Customer.objects.exists():
+    print("✅ La base de datos ya contiene información. Omitiendo el seed automático.")
+    import sys
+    sys.exit(0)
+
 # ──────────────────────────────────────────────────────────────────
 # 1. PRODUCTOS CEFUSA (idénticos a seed_products.py)
 # ──────────────────────────────────────────────────────────────────

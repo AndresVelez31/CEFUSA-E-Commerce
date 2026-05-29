@@ -57,7 +57,7 @@ services:
       MS_CUSTOMERS_URL: http://ms_customers:5003
       QUICKBITE_API_URL: http://107.23.134.243
       MS_SHIPPING_URL: http://ms_shipping:5004
-    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && python seed_data.py && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       db:
         condition: service_healthy
