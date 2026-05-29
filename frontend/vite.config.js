@@ -20,6 +20,7 @@ export default defineConfig(({ mode }) => {
         '/api/v2/inventory': { target: 'http://localhost:5001', changeOrigin: true },
         '/api/v2/cart': { target: 'http://localhost:5002', changeOrigin: true },
         '/api/v2/customers': { target: 'http://localhost:5003', changeOrigin: true },
+        '/api/v2/shipping': { target: 'http://localhost:5004', changeOrigin: true },
         '/api/v2/checkout': { target: 'http://localhost:5000', changeOrigin: true },
         '/api': {
           target: env.VITE_API_PROXY || 'http://localhost:8000',
