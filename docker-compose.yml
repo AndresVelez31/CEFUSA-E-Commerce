@@ -127,6 +127,9 @@ services:
     working_dir: /app
     volumes:
       - ./frontend:/app
+    environment:
+      VITE_USE_NGINX: "true"
+      VITE_NGINX_URL: "http://nginx"
     command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 3000"
     ports:
       - "3000:3000"
@@ -139,6 +142,8 @@ services:
       context: ./services/flask_customers_service
       dockerfile: Dockerfile
     container_name: cefusa_ms_customers
+    volumes:
+      - ms_customers_data:/data
     ports:
       - "5003:5003"
 
@@ -152,3 +157,4 @@ services:
 
 volumes:
   postgres_data:
+  ms_customers_data:
