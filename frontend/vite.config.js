@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
   const proxy = useNginx
     ? {
         '/api': {
-          target: 'http://localhost',
+          target: env.VITE_NGINX_URL || 'http://localhost',
           changeOrigin: true,
         },
       }

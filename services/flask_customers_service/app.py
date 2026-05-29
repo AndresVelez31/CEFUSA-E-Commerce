@@ -9,7 +9,8 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-DB_PATH = os.getenv("DB_PATH", "customers.db")
+DB_PATH = os.getenv("DB_PATH", "/data/customers.db")
+os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
 
 
 def get_db():

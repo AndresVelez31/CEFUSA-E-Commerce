@@ -183,11 +183,8 @@ REST_FRAMEWORK = {
     ],
 }
 
-# CORS - permite peticiones desde el frontend React en desarrollo
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
+# CORS - permite peticiones desde cualquier origen (desarrollo y demo AWS)
+CORS_ALLOW_ALL_ORIGINS = True
 
 # ──────────────────────────────────────────────────
 # Celery + Redis (broker para tareas asíncronas)
