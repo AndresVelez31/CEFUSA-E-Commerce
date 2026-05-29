@@ -2,6 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from products.services import ProductService
+from django.utils.translation import gettext as _
 from products.api.serializers import (
     ProductSerializer,
     ProductVariantSerializer,
@@ -182,7 +183,7 @@ class CheckStockView(APIView):
         quantity   = request.data.get('quantity')
         if not variant_id or not quantity:
             return Response(
-                {'error': 'variant_id y quantity son requeridos'},
+                {'error': _("variant_id y quantity son requeridos")},
                 status=status.HTTP_400_BAD_REQUEST
             )
         try:
