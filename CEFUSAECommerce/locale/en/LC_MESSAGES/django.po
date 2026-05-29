@@ -6,41 +6,243 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CEFUSA E-Commerce 2.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-29 05:02+0000\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-# customers/services.py
-msgid "Ya existe un cliente con el email %(email)s"
-msgstr "A customer with email %(email)s already exists"
-
-msgid "Cliente creado exitosamente"
-msgstr "Customer created successfully"
-
-msgid "Cliente no encontrado"
-msgstr "Customer not found"
-
-msgid "El email %(email)s ya está en uso por otro cliente"
-msgstr "The email %(email)s is already in use by another customer"
-
-msgid "Cliente actualizado"
-msgstr "Customer updated"
-
-msgid "Cliente eliminado"
-msgstr "Customer deleted"
-
-# customers/api/serializers.py
-msgid "El nombre no puede estar vacío."
-msgstr "First name cannot be empty."
-
-msgid "El apellido no puede estar vacío."
-msgstr "Last name cannot be empty."
-
 # settings.py
+#: CEFUSAECommerce/settings.py:141
 msgid "Español"
 msgstr "Spanish"
 
+#: CEFUSAECommerce/settings.py:142
 msgid "English"
 msgstr "English"
+
+# customers/api/serializers.py
+#: customers/api/serializers.py:28
+msgid "El nombre no puede estar vacío."
+msgstr "First name cannot be empty."
+
+#: customers/api/serializers.py:33
+msgid "El apellido no puede estar vacío."
+msgstr "Last name cannot be empty."
+
+#: customers/api/views.py:45 customers/api/views.py:110
+#: customers/services.py:105 customers/services.py:126
+#: customers/services.py:147
+msgid "Cliente no encontrado"
+msgstr "Customer not found"
+
+# customers/services.py
+#: customers/services.py:79
+#, python-format
+msgid "Ya existe un cliente con el email %(email)s"
+msgstr "A customer with email %(email)s already exists"
+
+#: customers/services.py:93
+msgid "Cliente creado exitosamente"
+msgstr "Customer created successfully"
+
+#: customers/services.py:132
+#, python-format
+msgid "El email %(email)s ya está en uso por otro cliente"
+msgstr "The email %(email)s is already in use by another customer"
+
+#: customers/services.py:138
+msgid "Cliente actualizado"
+msgstr "Customer updated"
+
+#: customers/services.py:149
+msgid "Cliente eliminado"
+msgstr "Customer deleted"
+
+#: integrations/api/views.py:23
+msgid "QuickBite no respondio a tiempo"
+msgstr ""
+
+#: integrations/api/views.py:30
+#, python-format
+msgid "QuickBite respondio con error HTTP %(status)s"
+msgstr ""
+
+#: integrations/api/views.py:38
+msgid "No se pudo conectar con QuickBite"
+msgstr ""
+
+#: integrations/views.py:42
+msgid "No se pudo consultar la tasa de cambio"
+msgstr ""
+
+#: integrations/views.py:54
+msgid "No se pudo contactar al aliado"
+msgstr ""
+
+#: orders/api/serializers.py:73
+msgid "La orden debe tener al menos un item."
+msgstr ""
+
+#: orders/api/views.py:52 orders/services.py:191 orders/services.py:226
+#, fuzzy
+#| msgid "Cliente no encontrado"
+msgid "Orden no encontrada"
+msgstr "Customer not found"
+
+#: orders/api/views.py:69
+msgid "El campo \"status\" es obligatorio"
+msgstr ""
+
+#: orders/domain/builders.py:41 orders/domain/builders.py:89
+msgid "La cantidad debe ser mayor a 0"
+msgstr ""
+
+#: orders/domain/builders.py:48
+#, python-format
+msgid "La variante '%(variant)s' no tiene inventario asignado"
+msgstr ""
+
+#: orders/domain/builders.py:56
+#, python-format
+msgid ""
+"Stock insuficiente para '%(product)s' (%(sku)s). Disponible: %(available)s, "
+"solicitado: %(requested)s"
+msgstr ""
+
+#: orders/domain/builders.py:93 orders/services.py:74
+#, python-format
+msgid ""
+"Stock insuficiente para '%(product)s'. Disponible: %(available)s, "
+"solicitado: %(requested)s"
+msgstr ""
+
+#: orders/domain/builders.py:123
+msgid "Se requiere un Customer para crear la orden"
+msgstr ""
+
+#: orders/domain/builders.py:125 orders/services.py:42
+msgid "La orden debe tener al menos un item"
+msgstr ""
+
+#: orders/domain/builders.py:127
+msgid "Se requiere una dirección de envío"
+msgstr ""
+
+#: orders/infra/microservice_clients.py:26
+#, python-format
+msgid "Servicio %(service)s no disponible"
+msgstr ""
+
+#: orders/infra/microservice_clients.py:33
+#, python-format
+msgid "Error HTTP %(code)s"
+msgstr ""
+
+#: orders/services.py:40
+msgid "Los datos del cliente son obligatorios"
+msgstr ""
+
+#: orders/services.py:44
+msgid "La dirección de envío es obligatoria"
+msgstr ""
+
+#: orders/services.py:66
+msgid "Cada item debe incluir 'variant_id'."
+msgstr ""
+
+#: orders/services.py:131
+#, fuzzy
+#| msgid "Cliente creado exitosamente"
+msgid "Orden creada exitosamente"
+msgstr "Customer created successfully"
+
+#: orders/services.py:164
+#, python-format
+msgid "Error al crear la orden: %(error)s"
+msgstr ""
+
+#: orders/services.py:180
+#, python-format
+msgid "Estado inválido. Opciones: %(valid)s"
+msgstr ""
+
+#: orders/services.py:188
+#, python-format
+msgid "Estado actualizado a %(status)s"
+msgstr ""
+
+#: orders/services.py:224
+#, fuzzy
+#| msgid "Cliente eliminado"
+msgid "Orden eliminada"
+msgstr "Customer deleted"
+
+#: products/api/views.py:187
+msgid "variant_id y quantity son requeridos"
+msgstr ""
+
+#: products/services.py:45 products/services.py:120 products/services.py:137
+#: products/services.py:164
+#, python-format
+msgid "Producto con id %(product_id)s no existe"
+msgstr ""
+
+#: products/services.py:52 products/services.py:67 products/services.py:95
+#: products/services.py:153 products/services.py:193 products/services.py:220
+#, python-format
+msgid "Variante con id %(variant_id)s no existe"
+msgstr ""
+
+#: products/services.py:75
+#, python-format
+msgid ""
+"Stock insuficiente. Disponible: %(available)s, solicitado: %(requested)s"
+msgstr ""
+
+#: products/services.py:84
+#, python-format
+msgid "Stock reservado exitosamente. Restante: %(remaining)s"
+msgstr ""
+
+#: products/services.py:98
+msgid "La cantidad no puede ser negativa"
+msgstr ""
+
+#: products/services.py:127
+#, fuzzy
+#| msgid "Cliente actualizado"
+msgid "Producto actualizado"
+msgstr "Customer updated"
+
+#: products/services.py:140
+msgid "Producto desactivado"
+msgstr ""
+
+#: products/services.py:168 products/services.py:200
+#, python-format
+msgid "El SKU '%(sku)s' ya está en uso"
+msgstr ""
+
+#: products/services.py:182
+#, fuzzy
+#| msgid "Cliente creado exitosamente"
+msgid "Variante añadida exitosamente"
+msgstr "Customer created successfully"
+
+#: products/services.py:208
+#, fuzzy
+#| msgid "Cliente creado exitosamente"
+msgid "Variante actualizada exitosamente"
+msgstr "Customer created successfully"
+
+#: products/services.py:224
+msgid "No se puede eliminar una variante que tiene ordenes asociadas"
+msgstr ""
+
+#: products/services.py:227
+#, fuzzy
+#| msgid "Cliente creado exitosamente"
+msgid "Variante eliminada exitosamente"
+msgstr "Customer created successfully"

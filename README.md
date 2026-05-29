@@ -7,7 +7,7 @@
 
 ## Descripción
 
-**CEFUSA E-Commerce** es una API backend que simula el proceso de compra de una tienda online. Está construida con **Django REST Framework** como monolito principal y evolucionada hacia una arquitectura híbrida mediante el **Strangler Pattern**, extrayendo el módulo de pagos a un microservicio **Flask** independiente orquestado con **Nginx** y **Docker**.
+**CEFUSA E-Commerce** es una API backend que simula el proceso de compra de una tienda online. Está construida con **Django REST Framework** como monolito principal y evolucionada hacia una arquitectura híbrida mediante el **Strangler Pattern**, extrayendo múltiples capacidades a microservicios **Flask** (payments, inventory, cart, customers, shipping) orquestados con **Nginx** y **Docker**, con **Redis + Celery** para tareas asíncronas.
 
 
 ---
@@ -30,6 +30,7 @@
 | 🔥 Microservicio | Python 3 · Flask 3 |
 | 🗄️ Base de datos | PostgreSQL 16 |
 | ⚙️ Proxy / Ruteo | Nginx 1.27 |
+| 📮 Broker / Async | Redis · Celery |
 | 🐳 Contenedores | Docker · Docker Compose |
 | 🌐 Frontend | React · Vite |
 | 🧪 Testing | pytest |
@@ -52,18 +53,24 @@
 └─────────────────────────────────────────────┘
 ```
 
-### Entregable 2 — Strangler Pattern
+### Entregable 2 — Strangler Pattern (Microservicios)
 
 ```
 🌐 Cliente
     │
     ▼
 ⚙️  Nginx :80
-   ├── /api/v2/*  ──▶  🔥 Flask :5000  (Payment Microservice)
-   └── /*         ──▶  🐍 Django :8000  (Monolito Legacy)
+   ├── /api/v2/checkout/   ──▶  🔥 ms-payment   :5000
+   ├── /api/v2/products/   ──▶  🔥 ms-inventory :5001
+   ├── /api/v2/inventory/  ──▶  🔥 ms-inventory :5001
+   ├── /api/v2/cart/       ──▶  🔥 ms-cart      :5002
+   ├── /api/v2/customers/  ──▶  🔥 ms-customers :5003
+   ├── /api/v2/shipping/   ──▶  🔥 ms-shipping  :5004
+   └── /api/* y /          ──▶  🐍 Django :8000 (Monolito Legacy)
                                │
                                ▼
                         🗄️ PostgreSQL
+                        📮 Redis + ⚡ Celery
 ```
 
 El monolito **no se rompe ni se modifica**. Nginx bifurca el tráfico según la versión de la ruta.
@@ -129,11 +136,22 @@ AHORA:  POST /api/v2/checkout/      →  Flask   (cálculo aislado, sin BD)
 | `POST` | `/api/customers/` | Crear cliente |
 | `GET` | `/api/customers/<id>/orders/` | Órdenes del cliente |
 
-### 🔥 Microservicio Flask (nuevo)
+### 🔥 Microservicios v2 (Flask)
 | Método | Ruta | Descripción |
 |---|---|---|
 | `POST` | `/api/v2/checkout/` | Checkout en Flask (sin BD) |
-| `GET` | `/api/v2/health` | Health check |
+| `GET` | `/api/v2/products/` | Listar productos (ms-inventory) |
+| `POST` | `/api/v2/cart/<cart_id>/items/` | Agregar item al carrito (ms-cart) |
+| `GET` | `/api/v2/customers/` | Listar clientes (ms-customers) |
+| `POST` | `/api/v2/shipping/` | Crear envío (ms-shipping) |
+
+### 🔗 Integraciones (API pública)
+| Método | Ruta | Descripción |
+|---|---|---|
+| `GET` | `/api/public/stats/` | Estadísticas públicas del sistema |
+| `GET` | `/api/integrations/exchange-rate/` | Tasa de cambio (Adapter) |
+| `GET` | `/api/integrations/ally/` | Servicio del aliado (Adapter) |
+| `GET` | `/api/integrations/quickbite/info/` | Proxy a API externa QuickBite |
 
 **Ejemplo `/api/v2/checkout/`:**
 ```json
@@ -168,8 +186,10 @@ docker compose exec django_app sh -lc "cd /app/CEFUSAECommerce ; python seed_cus
 | ms-inventory | `http://localhost:5001` | Productos / stock |
 | ms-cart | `http://localhost:5002` | Carrito |
 | ms-customers | `http://localhost:5003` | Clientes |
+| ms-shipping | `http://localhost:5004` | Envíos |
 | flask-payment | `http://localhost:5000` | Pagos (vía Django checkout) |
 | Django | `http://localhost:8000` | Órdenes y admin |
+| Redis | `http://localhost:6379` | Broker Celery |
 | Frontend | `http://localhost:3000` | React (proxy → Nginx) |
 
 ### 💻 Local (Windows)
@@ -184,8 +204,11 @@ docker compose exec django_app sh -lc "cd /app/CEFUSAECommerce ; python seed_cus
 ## 🧪 Tests
 
 ```bash
-cd flask_payment_service
-python -m pytest test_app.py -v
+cd services/flask_payment_service && python -m pytest test_app.py -v
+cd ../flask_inventory_service && python -m pytest test_app.py -v
+cd ../flask_cart_service && python -m pytest test_app.py -v
+cd ../flask_customers_service && python -m pytest test_app.py -v
+cd ../flask_shipping_service && python -m pytest test_app.py -v
 ```
 
 ✅ Cubre: health check · checkout con/sin descuento · errores 400 estructurados
