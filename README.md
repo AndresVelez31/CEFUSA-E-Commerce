@@ -1,3 +1,4 @@
+
 <div align="center">
 
 # 🛍️ CEFUSA E-Commerce
@@ -14,11 +15,11 @@
 
 ## 👥 Equipo
 
-| Integrante |
-|---|
-| 🧑‍💻 Andres Velez | 
-| 🧑‍💻 Sebastian Salazar | 
-| 🧑‍💻 Nathalia Cardoza | 
+| Integrante | Rol |
+|---|---|
+| 🧑‍💻 Andres Velez | Models · Builder Pattern · Docker + Nginx |
+| 🧑‍💻 Sebastian Salazar | Services · Factory Pattern · Microservicio Flask |
+| 🧑‍💻 Nathalia Cardoza | Tests · Documentación · Merge |
 
 ---
 
@@ -155,22 +156,17 @@ docker compose up --build
 ```
 
 ```bash
-# Catálogo (tienda + admin productos → ms-inventory)
-docker compose exec ms_inventory python seed_products.py
-
-# Órdenes de demo en Django (opcional, admin órdenes)
+# Seed de datos de prueba
+docker compose exec django_app sh -lc "cd /app/CEFUSAECommerce ; python seed_products.py"
 docker compose exec django_app sh -lc "cd /app/CEFUSAECommerce ; python seed_customers_orders.py"
 ```
 
-| Servicio | URL | Rol |
-|---|---|---|
-| API via Nginx | `http://localhost` | **Usar siempre desde el frontend** |
-| ms-inventory | `http://localhost:5001` | Productos / stock |
-| ms-cart | `http://localhost:5002` | Carrito |
-| ms-customers | `http://localhost:5003` | Clientes |
-| flask-payment | `http://localhost:5000` | Pagos (vía Django checkout) |
-| Django | `http://localhost:8000` | Órdenes y admin |
-| Frontend | `http://localhost:3000` | React (proxy → Nginx) |
+| Servicio | URL |
+|---|---|
+| API via Nginx | `http://localhost` |
+| Django directo | `http://localhost:8000` |
+| Flask directo | `http://localhost:5000` |
+| Frontend | `http://localhost:3000` |
 
 ### 💻 Local (Windows)
 

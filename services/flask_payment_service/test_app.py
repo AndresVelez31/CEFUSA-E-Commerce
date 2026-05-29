@@ -1,5 +1,5 @@
 """
-test_app.py — Tests de integración del microservicio Flask (Persona 3)
+test_app.py — Tests de integración del microservicio Flask
 Ejecutar con: python -m pytest test_app.py -v
 """
 import pytest
