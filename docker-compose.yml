@@ -57,8 +57,6 @@ services:
       MS_CUSTOMERS_URL: http://ms_customers:5003
       QUICKBITE_API_URL: http://107.23.134.243
       MS_SHIPPING_URL: http://ms_shipping:5004
-    ports:
-      - "8000:8000"
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     depends_on:
       db:
@@ -102,8 +100,6 @@ services:
     container_name: cefusa_flask
     environment:
       ENV_TYPE: development
-    ports:
-      - "5000:5000"
     deploy:
       resources:
         limits:
@@ -114,8 +110,6 @@ services:
       context: ./services/flask_inventory_service
       dockerfile: Dockerfile
     container_name: cefusa_ms_inventory
-    ports:
-      - "5001:5001"
     deploy:
       resources:
         limits:
@@ -126,8 +120,6 @@ services:
       context: ./services/flask_cart_service
       dockerfile: Dockerfile
     container_name: cefusa_ms_cart
-    ports:
-      - "5002:5002"
     deploy:
       resources:
         limits:
@@ -162,8 +154,6 @@ services:
     environment:
       VITE_USE_NGINX: "true"
       VITE_NGINX_URL: "http://nginx"
-    ports:
-      - "3000:3000"
     deploy:
       resources:
         limits:
@@ -177,8 +167,6 @@ services:
     container_name: cefusa_ms_customers
     volumes:
       - ms_customers_data:/data
-    ports:
-      - "5003:5003"
     deploy:
       resources:
         limits:
@@ -189,8 +177,6 @@ services:
       context: ./services/flask_shipping_service
       dockerfile: Dockerfile
     container_name: cefusa_ms_shipping
-    ports:
-      - "5004:5004"
     deploy:
       resources:
         limits:
