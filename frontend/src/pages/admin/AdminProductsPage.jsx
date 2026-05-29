@@ -71,7 +71,7 @@ function ProductModal({ open, onClose, initial, onSaved }) {
     try {
       const saved = isEdit
         ? await updateProduct(initial.id, form)
-        : await createProduct(form)
+        : await createProduct({ ...form, variants: [] })
       onSaved(saved, isEdit)
       toast.success(isEdit ? 'Producto actualizado' : 'Producto creado')
       onClose()
@@ -445,9 +445,22 @@ export default function AdminProductsPage() {
   const [prodModal, setProdModal]   = useState({ open: false, product: null })
   const [varDialog, setVarDialog]   = useState({ open: false, product: null })
 
+  const normalizeProducts = (list) =>
+    (Array.isArray(list) ? list : []).map(p => ({
+      ...p,
+      variants: (p.variants || []).map(v => ({
+        ...v,
+        inventory: v.inventory ?? {
+          available_quantity: v.available_quantity ?? 0,
+        },
+      })),
+    }))
+
   const load = () => {
     setLoading(true)
-    getProducts().then(setProducts).finally(() => setLoading(false))
+    getProducts()
+      .then(data => setProducts(normalizeProducts(data)))
+      .finally(() => setLoading(false))
   }
 
   useEffect(load, [])

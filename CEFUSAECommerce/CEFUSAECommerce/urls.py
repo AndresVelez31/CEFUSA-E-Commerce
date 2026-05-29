@@ -8,4 +8,5 @@ urlpatterns = [
     path('api/customers/',  include('customers.urls')),
     path('api/admin/',      include('CEFUSAECommerce.admin_urls')),
     path('api/products/',   include('products.urls')),
+    # Nathalia agrega aquí: path('api/', include('integrations.urls')),
 ]

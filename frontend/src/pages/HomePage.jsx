@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline'
-import { getProducts } from '../api/products'
+import { getProductsV2 } from '../api/products'
 import ProductCard from '../components/products/ProductCard'
 
 const CATEGORY_LABELS = {
@@ -18,7 +18,7 @@ export default function HomePage() {
 
   useEffect(() => {
     setLoading(true)
-    getProducts()
+    getProductsV2()
       .then(data => {
         setProducts(Array.isArray(data) ? data : data.results || [])
         setError(null)

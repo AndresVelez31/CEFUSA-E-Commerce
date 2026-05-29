@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-
+from django.utils.translation import gettext as _
 
 class Order(models.Model):
 

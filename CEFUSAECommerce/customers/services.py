@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from customers.models import Customer
 
 
@@ -75,7 +76,7 @@ class CustomerService:
             return {
                 'success': False,
                 'customer': None,
-                'message': f"Ya existe un cliente con el email {data.get('email')}"
+                'message': _("Ya existe un cliente con el email %(email)s") % {'email': data.get('email')}
             }
 
         customer = Customer.objects.create(
@@ -89,7 +90,7 @@ class CustomerService:
         return {
             'success': True,
             'customer': customer,
-            'message': 'Cliente creado exitosamente'
+            'message': _('Cliente creado exitosamente')
         }
 
     def get_customer_orders(self, customer_id: int) -> dict:
@@ -101,7 +102,7 @@ class CustomerService:
         """
         customer = self.get_customer_by_id(customer_id)
         if not customer:
-            return {'success': False, 'orders': [], 'message': 'Cliente no encontrado'}
+            return {'success': False, 'orders': [], 'message': _('Cliente no encontrado')}
 
         return {
             'success': True,
@@ -122,19 +123,19 @@ class CustomerService:
         customer = self.get_customer_by_id(customer_id)
         if not customer:
             return {'success': False, 'customer': None,
-                    'message': 'Cliente no encontrado'}
+                    'message': _('Cliente no encontrado')}
 
         new_email = data.get('email')
         if new_email and new_email != customer.email:
             if Customer.objects.filter(email=new_email).exclude(pk=customer_id).exists():
                 return {'success': False, 'customer': None,
-                        'message': f'El email {new_email} ya está en uso por otro cliente'}
+                        'message': _('El email %(email)s ya está en uso por otro cliente') % {'email': new_email}}
 
         for field in ('nombre', 'apellido', 'email', 'telefono', 'direccion'):
             if field in data:
                 setattr(customer, field, data[field])
         customer.save()
-        return {'success': True, 'customer': customer, 'message': 'Cliente actualizado'}
+        return {'success': True, 'customer': customer, 'message': _('Cliente actualizado')}
 
     def delete_customer(self, customer_id: int) -> dict:
         """
@@ -143,6 +144,6 @@ class CustomerService:
         """
         customer = self.get_customer_by_id(customer_id)
         if not customer:
-            return {'success': False, 'message': 'Cliente no encontrado'}
+            return {'success': False, 'message': _('Cliente no encontrado')}
         customer.delete()
-        return {'success': True, 'message': 'Cliente eliminado'}
+        return {'success': True, 'message': _('Cliente eliminado')}
