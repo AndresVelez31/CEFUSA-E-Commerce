@@ -31,6 +31,8 @@ def init_db():
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''')
     db.commit()
+    from seed_customers import seed_customers
+    seed_customers(db)
     db.close()
 
 
