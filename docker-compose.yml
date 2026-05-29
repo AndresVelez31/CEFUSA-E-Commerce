@@ -15,6 +15,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   redis:
     image: redis:7-alpine
@@ -26,6 +30,10 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 64M
 
   django_app:
     build:
@@ -57,13 +65,17 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 300M
 
   celery_worker:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: cefusa_celery
-    command: celery -A CEFUSAECommerce worker -l info
+    command: celery -A CEFUSAECommerce worker -l info --concurrency=1
     working_dir: /app/CEFUSAECommerce
     environment:
       DB_ENGINE: postgres
@@ -78,6 +90,10 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 128M
 
   flask_payment:
     build:
@@ -88,6 +104,10 @@ services:
       ENV_TYPE: development
     ports:
       - "5000:5000"
+    deploy:
+      resources:
+        limits:
+          memory: 96M
 
   ms_inventory:
     build:
@@ -96,6 +116,10 @@ services:
     container_name: cefusa_ms_inventory
     ports:
       - "5001:5001"
+    deploy:
+      resources:
+        limits:
+          memory: 96M
 
   ms_cart:
     build:
@@ -104,6 +128,10 @@ services:
     container_name: cefusa_ms_cart
     ports:
       - "5002:5002"
+    deploy:
+      resources:
+        limits:
+          memory: 96M
 
   nginx:
     image: nginx:1.27-alpine
@@ -120,6 +148,10 @@ services:
       - ms_customers
       - ms_shipping
       - frontend
+    deploy:
+      resources:
+        limits:
+          memory: 32M
 
   # ─── Frontend React (Vite) ───────────────────────────────────
   frontend:
@@ -132,6 +164,10 @@ services:
       VITE_NGINX_URL: "http://nginx"
     ports:
       - "3000:3000"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
 
   # ─── Andrés: ms-customers ────────────────────────────────────
   ms_customers:
@@ -143,6 +179,10 @@ services:
       - ms_customers_data:/data
     ports:
       - "5003:5003"
+    deploy:
+      resources:
+        limits:
+          memory: 64M
 
   ms_shipping:
     build:
@@ -151,6 +191,10 @@ services:
     container_name: cefusa_ms_shipping
     ports:
       - "5004:5004"
+    deploy:
+      resources:
+        limits:
+          memory: 96M
 
 volumes:
   postgres_data:
