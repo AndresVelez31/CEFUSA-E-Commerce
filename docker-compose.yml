@@ -45,6 +45,7 @@ services:
       MS_INVENTORY_URL: http://ms_inventory:5001
       MS_CART_URL: http://ms_cart:5002
       MS_CUSTOMERS_URL: http://ms_customers:5003
+      QUICKBITE_API_URL: http://107.23.134.243
     ports:
       - "8000:8000"
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"

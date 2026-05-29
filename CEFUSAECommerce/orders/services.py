@@ -1,16 +1,15 @@
 from orders.models import Order, OrderItem
 from orders.domain.builders import OrderBuilder
 from orders.infra.factories import NotificationFactory
+from customers.services import CustomerService
+from orders.tasks import send_order_notification
+from django.utils.translation import gettext as _
 from orders.infra.microservice_clients import (
     CustomersClient,
     InventoryClient,
     MicroserviceError,
     PaymentClient,
 )
-from customers.services import CustomerService
-from orders.tasks import send_order_notification
-from django.utils.translation import gettext as _
-
 
 class StockError(ValueError):
     """Excepción específica para errores de stock insuficiente."""
