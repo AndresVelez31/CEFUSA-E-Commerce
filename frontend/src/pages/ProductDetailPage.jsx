@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { ShoppingCartIcon, ArrowLeftIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import toast from 'react-hot-toast'
-import { getProduct } from '../api/products'
+import { getProductV2 } from '../api/products'
 import { useCart } from '../context/CartContext'
 
 const CATEGORY_LABELS = {
@@ -22,7 +22,7 @@ export default function ProductDetailPage() {
   const [added, setAdded]               = useState(false)
 
   useEffect(() => {
-    getProduct(id)
+    getProductV2(id)
       .then(data => {
         setProduct(data)
         const first = data.variants?.find(v => v.is_available) || data.variants?.[0]
@@ -32,9 +32,9 @@ export default function ProductDetailPage() {
       .finally(() => setLoading(false))
   }, [id])
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedVariant) return
-    addItem({
+    const ok = await addItem({
       variant_id: selectedVariant.id,
       product_id: product.id,
       product_name: product.name,
@@ -44,9 +44,13 @@ export default function ProductDetailPage() {
       price: selectedVariant.price,
       quantity,
     })
-    setAdded(true)
-    toast.success('Producto agregado al carrito')
-    setTimeout(() => setAdded(false), 2000)
+    if (ok) {
+      setAdded(true)
+      toast.success('Producto agregado al carrito')
+      setTimeout(() => setAdded(false), 2000)
+    } else {
+      toast.error('No se pudo agregar el producto')
+    }
   }
 
   if (loading) {

@@ -14,7 +14,8 @@ class OrderBuilder:
 
     def __init__(self):
         self._customer = None
-        self._items = []   # {'variant': obj, 'quantity': int, 'product_name': str, 'price': Decimal}
+        # variant: ProductVariant (legacy) | None si viene de ms-inventory
+        self._items = []
         self._direccion_envio = None
         self._discount_code = None
 
@@ -65,9 +66,45 @@ class OrderBuilder:
 
         self._items.append({
             "variant":      variant,
+            "variant_id":   variant.pk,
             "product_name": variant.product.name,       # snapshot del nombre
             "quantity":     quantity,
             "price":        Decimal(str(variant.price)), # snapshot del precio
+        })
+        return self
+
+    def add_item_snapshot(
+        self,
+        variant_id: int,
+        product_name: str,
+        quantity: int,
+        price,
+        available_quantity: int,
+    ):
+        """
+        Agrega un item usando datos del microservicio ms-inventory.
+        Valida stock contra la cantidad reportada por el MS.
+        """
+        if quantity <= 0:
+            raise ValueError(_("La cantidad debe ser mayor a 0"))
+        if available_quantity < quantity:
+            raise ValueError(
+                _(
+                    "Stock insuficiente para '%(product)s'. "
+                    "Disponible: %(available)s, solicitado: %(requested)s"
+                )
+                % {
+                    "product": product_name,
+                    "available": available_quantity,
+                    "requested": quantity,
+                }
+            )
+        self._items.append({
+            "variant":      None,
+            "variant_id":   variant_id,
+            "product_name": product_name,
+            "quantity":     quantity,
+            "price":        Decimal(str(price)),
         })
         return self
 
@@ -112,11 +149,10 @@ class OrderBuilder:
             total=total,
         )
 
-        # Persistir cada item con su FK real a la variante
         for item in self._items:
             OrderItem.objects.create(
                 order=order,
-                variant=item["variant"],
+                variant=item.get("variant"),
                 product_name=item["product_name"],
                 quantity=item["quantity"],
                 price=item["price"],

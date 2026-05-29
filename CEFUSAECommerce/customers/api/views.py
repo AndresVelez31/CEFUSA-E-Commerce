@@ -1,3 +1,4 @@
+from django.utils.translation import gettext as _
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -41,7 +42,7 @@ class CustomerDetailView(APIView):
         customer = service.get_customer_by_id(pk)
         if not customer:
             return Response(
-                {'message': 'Cliente no encontrado'},
+                {'message': _('Cliente no encontrado')},
                 status=status.HTTP_404_NOT_FOUND
             )
         serializer = CustomerSerializer(customer)
@@ -106,7 +107,7 @@ class AdminCustomerDetailView(APIView):
     def get(self, request, pk):
         customer = CustomerService().get_customer_by_id(pk)
         if not customer:
-            return Response({'message': 'Cliente no encontrado'},
+            return Response({'message': _('Cliente no encontrado')},
                             status=status.HTTP_404_NOT_FOUND)
         return Response(CustomerSerializer(customer).data)
 

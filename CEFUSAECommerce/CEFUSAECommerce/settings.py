@@ -58,6 +58,7 @@ MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',          # DEBE ir primero
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',       # i18n — detecta idioma del request
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -131,12 +132,20 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.0/topics/i18n/
+from django.utils.translation import gettext_lazy as _
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
+
+LANGUAGES = [
+    ('es', _('Español')),
+    ('en', _('English')),
+]
 
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
+
+LOCALE_PATHS = [BASE_DIR / 'locale']
 
 USE_TZ = True
 
@@ -178,3 +187,21 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
 ]
+
+# ──────────────────────────────────────────────────
+# Celery + Redis (broker para tareas asíncronas)
+# ──────────────────────────────────────────────────
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+
+# ──────────────────────────────────────────────────
+# URLs de Microservicios (Strangler Pattern)
+# ──────────────────────────────────────────────────
+MS_PAYMENT_URL = os.getenv('MS_PAYMENT_URL', 'http://localhost:5000')
+MS_INVENTORY_URL = os.getenv('MS_INVENTORY_URL', 'http://localhost:5001')
+MS_CART_URL = os.getenv('MS_CART_URL', 'http://localhost:5002')
+MS_CUSTOMERS_URL = os.getenv('MS_CUSTOMERS_URL', 'http://localhost:5003')
+MS_SHIPPING_URL = os.getenv('MS_SHIPPING_URL', 'http://localhost:5004')
+ALLY_SERVICE_URL = os.getenv('ALLY_SERVICE_URL', 'http://localhost:9000')

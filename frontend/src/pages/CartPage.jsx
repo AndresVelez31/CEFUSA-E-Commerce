@@ -4,7 +4,15 @@ import { useCart } from '../context/CartContext'
 import CartItem from '../components/cart/CartItem'
 
 export default function CartPage() {
-  const { items, subtotal, clearCart } = useCart()
+  const { items, subtotal, clearCart, loading } = useCart()
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-24 text-center text-gray-500">
+        Cargando carrito...
+      </div>
+    )
+  }
 
   if (items.length === 0) {
     return (

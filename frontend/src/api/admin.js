@@ -20,15 +20,16 @@ export const updateOrderStatus = (id, newStatus) =>
 export const deleteAdminOrder = (id) =>
   api.delete(`/admin/orders/${id}/delete/`).then(r => r.data)
 
-// ─── Clientes ─────────────────────────────────────────────────────────────────
+// ─── Clientes ───────────────────────────────────────────────────────
+// Rutas v2 — ms-customers (Strangler Pattern)
 export const getAdminCustomers = () =>
-  api.get('/admin/customers/').then(r => r.data)
+  api.get('/v2/customers/').then(r => r.data)
 
 export const createAdminCustomer = (data) =>
-  api.post('/admin/customers/', data).then(r => r.data)
+  api.post('/v2/customers/', data).then(r => r.data.customer ?? r.data)
 
 export const updateAdminCustomer = (id, data) =>
-  api.put(`/admin/customers/${id}/`, data).then(r => r.data)
+  api.put(`/v2/customers/${id}/`, data).then(r => r.data.customer ?? r.data)
 
 export const deleteAdminCustomer = (id) =>
-  api.delete(`/admin/customers/${id}/`).then(r => r.data)
+  api.delete(`/v2/customers/${id}/`).then(r => r.data)

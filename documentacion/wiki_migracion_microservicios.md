@@ -14,17 +14,29 @@ El **Taller 02** aplica el **Strangler Pattern** para migrar el módulo de pagos
 
 ---
 
-## Módulo Estrangulado: Procesamiento de Pagos
+## Estado actual del repositorio (Strangler en curso)
 
-### Matriz de Decisión
+| Capacidad | Ruta API | Servicio | BD |
+|---|---|---|---|
+| Catálogo / stock | `/api/v2/products/`, `/api/v2/inventory/` | `ms_inventory` (:5001) | SQLite |
+| Carrito | `/api/v2/cart/` | `ms_cart` (:5002) | en memoria / servicio |
+| Clientes (admin + sync checkout) | `/api/v2/customers/` | `ms_customers` (:5003) | SQLite |
+| Pago (procesamiento) | `/api/v2/checkout/` | `flask_payment` (:5000) | ninguna |
+| Órdenes (persistencia + admin) | `/api/orders/`, `/api/admin/` | Django (:8000) | PostgreSQL |
 
-Se evaluaron los tres módulos principales del sistema según los criterios definidos en el taller:
+`OrderService` en Django **orquesta** los microservicios vía HTTP (`orders/infra/microservice_clients.py`) y guarda la orden en PostgreSQL. El frontend usa Vite → Nginx (:80) → servicios.
 
-| Módulo | Carga CPU/IO | Frecuencia de cambio | Acoplamiento BD | Decisión |
-|---|---|---|---|---|
-| Customers | Baja | Baja | Alto (FK con órdenes) | ✅ Mantener en Django |
-| Products / Inventory | Media | Media | Alto (FK con OrderItem) | ✅ Mantener en Django |
-| **Orders / Payment** | **Alta** | **Alta** | **Bajo (Factory desacoplada)** | 🔴 **Estrangular → Flask** |
+---
+
+## Módulo Estrangulado (histórico del taller): Procesamiento de Pagos
+
+### Matriz de Decisión (entregable original)
+
+| Módulo | Decisión original taller | Estado en código hoy |
+|---|---|---|
+| Customers | Mantener en Django | **Estrangulado** → `ms_customers` (+ sync Django para FK) |
+| Products / Inventory | Mantener en Django | **Estrangulado** → `ms_inventory` |
+| Orders / Payment | Estrangular pagos → Flask | Pagos en `flask_payment`; órdenes siguen en Django |
 
 ### Justificación
 
@@ -56,8 +68,9 @@ graph TD
     FlaskLogic["💳 Cálculo de pago\n(sin acceso a BD)"]
 
     Cliente -->|"HTTP :80"| Nginx
-    Nginx -->|"/api/v2/* → proxy_pass :5000"| Flask
-    Nginx -->|"/api/* y / → proxy_pass :8000"| Django
+    Nginx -->|"/api/v2/checkout/"| Flask
+    Nginx -->|"/api/v2/products|cart|customers/"| FlaskMS["Flask MS :5001-5003"]
+    Nginx -->|"/api/orders/ · /api/admin/"| Django
 
     Django --> Orders
     Django --> Products

@@ -41,6 +41,10 @@ services:
       DB_PORT: "5432"
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1,django_app,nginx
       CELERY_BROKER_URL: redis://redis:6379/0
+      MS_PAYMENT_URL: http://flask_payment:5000
+      MS_INVENTORY_URL: http://ms_inventory:5001
+      MS_CART_URL: http://ms_cart:5002
+      MS_CUSTOMERS_URL: http://ms_customers:5003
     ports:
       - "8000:8000"
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
@@ -109,6 +113,16 @@ services:
       - flask_payment
       - ms_inventory
       - ms_cart
+      - ms_customers
+
+  # ─── Andrés: ms-customers ────────────────────────────────────
+  ms_customers:
+    build:
+      context: ./services/flask_customers_service
+      dockerfile: Dockerfile
+    container_name: cefusa_ms_customers
+    ports:
+      - "5003:5003"
 
 volumes:
   postgres_data:

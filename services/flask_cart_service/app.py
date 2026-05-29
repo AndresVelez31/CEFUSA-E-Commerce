@@ -51,6 +51,9 @@ def add_item(cart_id):
         items.append({
             "variant_id": data["variant_id"],
             "product_name": data.get("product_name", ""),
+            "sku": data.get("sku", ""),
+            "size": data.get("size"),
+            "color": data.get("color"),
             "price": float(data.get("price", 0)),
             "quantity": data.get("quantity", 1),
         })
